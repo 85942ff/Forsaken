@@ -1319,11 +1319,11 @@ end
 end})
 
 if getgenv().ExistingConnections then
-   for _, conn in ipairs(getgenv().ExistingConnections) do
-       if conn then
-           pcall(function() conn:Disconnect() end)
-       end
-   end
+  for _, conn in ipairs(getgenv().ExistingConnections) do
+      if conn then
+          pcall(function() conn:Disconnect() end)
+      end
+  end
 end
 
 getgenv().ExistingConnections = {}
@@ -1333,7 +1333,7 @@ getgenv().RunService = game:GetService("RunService")
 getgenv().LocalPlayer = getgenv().Players.LocalPlayer
 getgenv().ReplicatedStorage = game:GetService("ReplicatedStorage")
 getgenv().buffer = buffer or require(getgenv().ReplicatedStorage.Buffer)
-getgenv().RemoteEvent = getgenv().ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent")
+getgenv().RemoteEvent = getgenv().ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("Network"):WaitForChild("RemoteEvent")
 
 local Plrs = getgenv().Players
 local RSvc = getgenv().RunService
@@ -1342,153 +1342,154 @@ local RS = getgenv().ReplicatedStorage
 local Workspace = game:GetService("Workspace")
 
 getgenv().AutoBlockSounds = {
-   ["12222216"] = true,
-   ["71805956520207"] = true,
-   ["71834552297085"] = true,
-   ["72425554233832"] = true,
-   ["75330693422988"] = true,
-   ["76467993976301"] = true,
-   ["76959687420003"] = true,
-   ["77245770579014"] = true,
-   ["78298577002481"] = true,
-   ["79391273191671"] = true,
-   ["79980897195554"] = true,
-   ["80516583309685"] = true,
-   ["81702359653578"] = true,
-   ["82221759983649"] = true,
-   ["84116622032112"] = true,
-   ["84307400688050"] = true,
-   ["85810983952228"] = true,
-   ["85853080745515"] = true,
-   ["86174610237192"] = true,
-   ["86494585504534"] = true,
-   ["86833981571073"] = true,
-   ["89004992452376"] = true,
-   ["89315669689903"] = true,
-   ["90878551190839"] = true,
-   ["94043596324983"] = true,
-   ["95079963655241"] = true,
-   ["97894923442490"] = true,
-   ["98675142200448"] = true,
-   ["99829427721752"] = true,
-   ["101199185291628"] = true,
-   ["101553872555606"] = true,
-   ["101698569375359"] = true,
-   ["102228729296384"] = true,
-   ["103684883268194"] = true,
-   ["104910828105172"] = true,
-   ["105200830849301"] = true,
-   ["105840448036441"] = true,
-   ["106300477136129"] = true,
-   ["107444859834748"] = true,
-   ["108610718831698"] = true,
-   ["108907358619313"] = true,
-   ["109348678063422"] = true,
-   ["109431876587852"] = true,
-   ["110115912768379"] = true,
-   ["110372418055226"] = true,
-   ["112395455254818"] = true,
-   ["112809109188560"] = true,
-   ["113037804008732"] = true,
-   ["114742322778642"] = true,
-   ["115026634746636"] = true,
-   ["116581754553533"] = true,
-   ["117173212095661"] = true,
-   ["117231507259853"] = true,
-   ["119089145505438"] = true,
-   ["119583605486352"] = true,
-   ["119942598489800"] = true,
-   ["121954639447247"] = true,
-   ["124330645976935"] = true,
-   ["124397369810639"] = true,
-   ["124903763333174"] = true,
-   ["125213046326879"] = true,
-   ["127793641088496"] = true,
-   ["128856426573270"] = true,
-   ["131123355704017"] = true,
-   ["131406927389838"] = true,
-   ["135448067174226"] = true,
-   ["136323728355613"] = true,
-   ["136841625231863"] = true,
-   ["140242176732868"] = true,
-   ["128367348686124"] = true,
-   ["116527305931161"] = true
+  ["12222216"] = true,
+  ["71805956520207"] = true,
+  ["71834552297085"] = true,
+  ["72425554233832"] = true,
+  ["75330693422988"] = true,
+  ["76467993976301"] = true,
+  ["76959687420003"] = true,
+  ["77245770579014"] = true,
+  ["78298577002481"] = true,
+  ["79391273191671"] = true,
+  ["79980897195554"] = true,
+  ["80516583309685"] = true,
+  ["81702359653578"] = true,
+  ["82221759983649"] = true,
+  ["84116622032112"] = true,
+  ["84307400688050"] = true,
+  ["85810983952228"] = true,
+  ["85853080745515"] = true,
+  ["86174610237192"] = true,
+  ["86494585504534"] = true,
+  ["86833981571073"] = true,
+  ["89004992452376"] = true,
+  ["89315669689903"] = true,
+  ["90878551190839"] = true,
+  ["94043596324983"] = true,
+  ["95079963655241"] = true,
+  ["97894923442490"] = true,
+  ["98675142200448"] = true,
+  ["99829427721752"] = true,
+  ["101199185291628"] = true,
+  ["101553872555606"] = true,
+  ["101698569375359"] = true,
+  ["102228729296384"] = true,
+  ["103684883268194"] = true,
+  ["104910828105172"] = true,
+  ["105200830849301"] = true,
+  ["105840448036441"] = true,
+  ["106300477136129"] = true,
+  ["107444859834748"] = true,
+  ["108610718831698"] = true,
+  ["108907358619313"] = true,
+  ["109348678063422"] = true,
+  ["109431876587852"] = true,
+  ["110115912768379"] = true,
+  ["110372418055226"] = true,
+  ["112395455254818"] = true,
+  ["112809109188560"] = true,
+  ["113037804008732"] = true,
+  ["114742322778642"] = true,
+  ["115026634746636"] = true,
+  ["116581754553533"] = true,
+  ["117173212095661"] = true,
+  ["117231507259853"] = true,
+  ["119089145505438"] = true,
+  ["119583605486352"] = true,
+  ["119942598489800"] = true,
+  ["121954639447247"] = true,
+  ["124330645976935"] = true,
+  ["124397369810639"] = true,
+  ["124903763333174"] = true,
+  ["125213046326879"] = true,
+  ["127793641088496"] = true,
+  ["128856426573270"] = true,
+  ["131123355704017"] = true,
+  ["131406927389838"] = true,
+  ["135448067174226"] = true,
+  ["136323728355613"] = true,
+  ["136841625231863"] = true,
+  ["140242176732868"] = true,
+  ["128367348686124"] = true,
+  ["116527305931161"] = true
 }
 
 getgenv().AutoBlockAnims = {
-   ["18885909645"] = true,
-   ["70371667919898"] = true,
-   ["70447634862911"] = true,
-   ["99135633258223"] = true,
-   ["74707328554358"] = true,
-   ["81299297965542"] = true,
-   ["81639435858902"] = true,
-   ["82113744478546"] = true,
-   ["83251433279852"] = true,
-   ["83685305553364"] = true,
-   ["83829782357897"] = true,
-   ["86204001129974"] = true,
-   ["87989533095285"] = true,
-   ["88451353906104"] = true,
-   ["88970503168421"] = true,
-   ["92173139187970"] = true,
-   ["93069721274110"] = true,
-   ["94162446513587"] = true,
-   ["96571077893813"] = true,
-   ["97167027849946"] = true,
-   ["97433060861952"] = true,
-   ["98456918873918"] = true,
-   ["99135633258223"] = true,
-   ["99829427721752"] = true,
-   ["100592913030351"] = true,
-   ["105458270463374"] = true,
-   ["106538427162796"] = true,
-   ["106776364623742"] = true,
-   ["106847695270773"] = true,
-   ["109230267448394"] = true,
-   ["109667959938617"] = true,
-   ["114356208094580"] = true,
-   ["114506382930939"] = true,
-   ["118298475669935"] = true,
-   ["120112897026015"] = true,
-   ["121086746534252"] = true,
-   ["121293883585738"] = true,
-   ["122709416391891"] = true,
-   ["124705663396411"] = true,
-   ["125403313786645"] = true,
-   ["126171487400618"] = true,
-   ["126355327951215"] = true,
-   ["126681776859538"] = true,
-   ["126830014841198"] = true,
-   ["126896426760253"] = true,
-   ["128414736976503"] = true,
-   ["129976080405072"] = true,
-   ["131430497821198"] = true,
-   ["131543461321709"] = true,
-   ["133336594357903"] = true,
-   ["133363345661032"] = true,
-   ["137314737492715"] = true,
-   ["138938529389204"] = true,
-   ["139309647473555"] = true,
-   ["139835501033932"] = true,
-   ["109700476007435"] = true,
-   ["93366464803829"] = true,
-   ["98590570796574"] = true
+  ["18885909645"] = true,
+  ["70371667919898"] = true,
+  ["70447634862911"] = true,
+  ["99135633258223"] = true,
+  ["74707328554358"] = true,
+  ["81299297965542"] = true,
+  ["81639435858902"] = true,
+  ["82113744478546"] = true,
+  ["83251433279852"] = true,
+  ["83685305553364"] = true,
+  ["83829782357897"] = true,
+  ["86204001129974"] = true,
+  ["87989533095285"] = true,
+  ["88451353906104"] = true,
+  ["88970503168421"] = true,
+  ["92173139187970"] = true,
+  ["93069721274110"] = true,
+  ["94162446513587"] = true,
+  ["96571077893813"] = true,
+  ["97167027849946"] = true,
+  ["97433060861952"] = true,
+  ["98456918873918"] = true,
+  ["99135633258223"] = true,
+  ["99829427721752"] = true,
+  ["100592913030351"] = true,
+  ["105458270463374"] = true,
+  ["106538427162796"] = true,
+  ["106776364623742"] = true,
+  ["106847695270773"] = true,
+  ["109230267448394"] = true,
+  ["109667959938617"] = true,
+  ["114356208094580"] = true,
+  ["114506382930939"] = true,
+  ["118298475669935"] = true,
+  ["120112897026015"] = true,
+  ["121086746534252"] = true,
+  ["121293883585738"] = true,
+  ["122709416391891"] = true,
+  ["124705663396411"] = true,
+  ["125403313786645"] = true,
+  ["126171487400618"] = true,
+  ["126355327951215"] = true,
+  ["126681776859538"] = true,
+  ["126830014841198"] = true,
+  ["126896426760253"] = true,
+  ["128414736976503"] = true,
+  ["129976080405072"] = true,
+  ["131430497821198"] = true,
+  ["131543461321709"] = true,
+  ["133336594357903"] = true,
+  ["133363345661032"] = true,
+  ["137314737492715"] = true,
+  ["138938529389204"] = true,
+  ["139309647473555"] = true,
+  ["139835501033932"] = true,
+  ["109700476007435"] = true,
+  ["93366464803829"] = true,
+  ["98590570796574"] = true
 }
 
+-- 基础设置
 getgenv().AutoBlockEnabled = false
 getgenv().KillerFacingCheckEnabled = false
 getgenv().wallCheckEnabled = false
-getgenv().BoxLength = 7.5
-getgenv().BoxWidth = 4.5
+getgenv().BoxLength = 4.5
+getgenv().BoxWidth = 7
 getgenv().BoxHeight = 6
 getgenv().BoxTransparency = 0.7
 getgenv().BoxSafeColor = Color3.fromRGB(0, 255, 0)
 getgenv().BoxDangerColor = Color3.fromRGB(255, 0, 0)
-getgenv().BoxSizeMultiplier = 1.0
-getgenv().BoxForwardOffset = 1.4
-getgenv().BoxVisualizationEnabled = false
+getgenv().BoxSizeMultiplier = 1.0  -- Box整体大小倍数
+getgenv().BoxForwardOffset = 0  -- Box前后位置偏移
 
+-- Hitbox视觉效果设置
 getgenv().HitboxVisualizationEnabled = false
 getgenv().HitboxColor = Color3.fromRGB(255, 255, 255)
 getgenv().HitboxTransparency = 0.5
@@ -1510,301 +1511,346 @@ getgenv().BoxVisualizations = {}
 getgenv().KillerFacingAngle = 90
 
 getgenv().FireBlockRemote = function()
-   local now = tick()
-   if now - getgenv().lastBlockTime < getgenv().blockCooldown then return end
-   getgenv().lastBlockTime = now
-   local args = {"UseActorAbility", {buffer.fromstring("\3\5\0\0\0Block")}}
-   game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+    local now = tick()
+    if now - getgenv().lastBlockTime < getgenv().blockCooldown then return end
+    getgenv().lastBlockTime = now
+    pcall(function()
+        local args = {
+            "UseActorAbility",
+            { buffer.fromstring("\003\005\000\000\000Block") }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+    end)
 end
 
 getgenv().IsKillerFacingPlayer = function(myRoot,killerRoot)
-   if not getgenv().KillerFacingCheckEnabled then return true end
-   if not myRoot or not killerRoot then return false end
-   local dirToPlayer = (myRoot.Position - killerRoot.Position)
-   local flatDir = Vector3.new(dirToPlayer.X, 0, dirToPlayer.Z).Unit
-   local killerLookDir = Vector3.new(killerRoot.CFrame.LookVector.X, 0, killerRoot.CFrame.LookVector.Z).Unit
-   local dotProduct = killerLookDir:Dot(flatDir)
-   local angleInDegrees = math.deg(math.acos(math.clamp(dotProduct,-1,1)))
-   return angleInDegrees <= getgenv().KillerFacingAngle
+  if not getgenv().KillerFacingCheckEnabled then return true end
+  if not myRoot or not killerRoot then return false end
+  local dirToPlayer = (myRoot.Position - killerRoot.Position)
+  local flatDir = Vector3.new(dirToPlayer.X, 0, dirToPlayer.Z).Unit
+  local killerLookDir = Vector3.new(killerRoot.CFrame.LookVector.X, 0, killerRoot.CFrame.LookVector.Z).Unit
+  local dotProduct = killerLookDir:Dot(flatDir)
+  local angleInDegrees = math.deg(math.acos(math.clamp(dotProduct,-1,1)))
+  return angleInDegrees <= getgenv().KillerFacingAngle
 end
 
 getgenv().HasLineOfSight = function(targetRoot)
-   if not getgenv().wallCheckEnabled then return true end
-   local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
-   if not myRoot then return false end
-   local rayParams = RaycastParams.new()
-   rayParams.FilterType = Enum.RaycastFilterType.Exclude
-   rayParams.IgnoreWater = true
-   rayParams.FilterDescendantsInstances = {LocalP.Character}
-   local origin = myRoot.Position
-   local direction = targetRoot.Position - origin
-   local result = workspace:Raycast(origin,direction,rayParams)
-   return not result or result.Instance:IsDescendantOf(targetRoot.Parent)
+  if not getgenv().wallCheckEnabled then return true end
+  local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
+  if not myRoot then return false end
+  local rayParams = RaycastParams.new()
+  rayParams.FilterType = Enum.RaycastFilterType.Exclude
+  rayParams.IgnoreWater = true
+  rayParams.FilterDescendantsInstances = {LocalP.Character}
+  local origin = myRoot.Position
+  local direction = targetRoot.Position - origin
+  local result = workspace:Raycast(origin,direction,rayParams)
+  return not result or result.Instance:IsDescendantOf(targetRoot.Parent)
 end
 
 getgenv().IsPlayerInBox = function(myRoot, killerRoot)
-   if not myRoot or not killerRoot then return false end
-   local forward = killerRoot.CFrame.LookVector
-   local effectiveLength = getgenv().BoxLength * getgenv().BoxSizeMultiplier
-   local forwardOffset = forward * ((effectiveLength/2) + getgenv().BoxForwardOffset)
-   local boxPos = killerRoot.Position + forwardOffset
-   local boxCFrame = CFrame.lookAt(boxPos, boxPos + forward * 100)
-   local relative = myRoot.Position - boxPos
-   local localSpace = boxCFrame:VectorToObjectSpace(relative)
-   local halfX = (getgenv().BoxWidth * getgenv().BoxSizeMultiplier) / 2
-   local halfY = (getgenv().BoxHeight * getgenv().BoxSizeMultiplier) / 2
-   local halfZ = effectiveLength / 2
-   return math.abs(localSpace.X) <= halfX and math.abs(localSpace.Y) <= halfY and math.abs(localSpace.Z) <= halfZ
+  if not myRoot or not killerRoot then return false end
+  
+  local forward = killerRoot.CFrame.LookVector
+  -- 应用前后偏移和整体倍数
+  local effectiveLength = getgenv().BoxLength * getgenv().BoxSizeMultiplier
+  local forwardOffset = forward * ((effectiveLength/2) + getgenv().BoxForwardOffset)
+  local boxPos = killerRoot.Position + forwardOffset
+  local boxCFrame = CFrame.lookAt(boxPos, boxPos + forward * 100)
+  
+  local relative = myRoot.Position - boxPos
+  local localSpace = boxCFrame:VectorToObjectSpace(relative)
+  
+  -- 应用整体倍数
+  local halfX = (getgenv().BoxWidth * getgenv().BoxSizeMultiplier) / 2
+  local halfY = (getgenv().BoxHeight * getgenv().BoxSizeMultiplier) / 2
+  local halfZ = effectiveLength / 2
+  
+  return math.abs(localSpace.X) <= halfX and math.abs(localSpace.Y) <= halfY and math.abs(localSpace.Z) <= halfZ
 end
 
 getgenv().CheckAllBlockConditions = function(myRoot,killerRoot)
-   if not myRoot or not killerRoot then return false end
-   if not getgenv().IsPlayerInBox(myRoot, killerRoot) then return false end
-   if not getgenv().IsKillerFacingPlayer(myRoot,killerRoot) then return false end
-   if not getgenv().HasLineOfSight(killerRoot) then return false end
-   return true
+  if not myRoot or not killerRoot then return false end
+  
+  if not getgenv().IsPlayerInBox(myRoot, killerRoot) then return false end
+  if not getgenv().IsKillerFacingPlayer(myRoot,killerRoot) then return false end
+  if not getgenv().HasLineOfSight(killerRoot) then return false end
+  
+  return true
 end
 
 getgenv().GetSoundIdNumeric = function(snd)
-   if not snd or not snd.SoundId then return nil end
-   local sid = tostring(snd.SoundId)
-   return sid:match("%d+")
+  if not snd or not snd.SoundId then return nil end
+  local sid = tostring(snd.SoundId)
+  return sid:match("%d+")
 end
 
 getgenv().GetAnimIdNumeric = function(anim)
-   if not anim or not anim.AnimationId then return nil end
-   local aid = tostring(anim.AnimationId)
-   return aid:match("%d+")
+  if not anim or not anim.AnimationId then return nil end
+  local aid = tostring(anim.AnimationId)
+  return aid:match("%d+")
 end
 
 getgenv().GetSoundPosition = function(snd)
-   if not snd then return nil end
-   if snd.Parent and snd.Parent:IsA("BasePart") then
-       return snd.Parent.Position,snd.Parent
-   end
-   if snd.Parent and snd.Parent:IsA("Attachment") and snd.Parent.Parent and snd.Parent.Parent:IsA("BasePart") then
-       return snd.Parent.Parent.Position,snd.Parent.Parent
-   end
-   local found = snd.Parent and snd.Parent:FindFirstChildWhichIsA("BasePart",true)
-   return found and found.Position,found or nil,nil
+  if not snd then return nil end
+  if snd.Parent and snd.Parent:IsA("BasePart") then
+      return snd.Parent.Position,snd.Parent
+  end
+  if snd.Parent and snd.Parent:IsA("Attachment") and snd.Parent.Parent and snd.Parent.Parent:IsA("BasePart") then
+      return snd.Parent.Parent.Position,snd.Parent.Parent
+  end
+  local found = snd.Parent and snd.Parent:FindFirstChildWhichIsA("BasePart",true)
+  return found and found.Position,found or nil,nil
 end
 
 getgenv().GetCharFromDescendant = function(inst)
-   if not inst then return nil end
-   local mdl = inst:FindFirstAncestorOfClass("Model")
-   return mdl and mdl:FindFirstChildOfClass("Humanoid") and mdl or nil
+  if not inst then return nil end
+  local mdl = inst:FindFirstAncestorOfClass("Model")
+  return mdl and mdl:FindFirstChildOfClass("Humanoid") and mdl or nil
 end
 
 getgenv().AttemptBlockSound = function(snd)
-   if not getgenv().AutoBlockEnabled then return end
-   if not snd or not snd:IsA("Sound") then return end
-   if not snd.IsPlaying then return end
-   local id = getgenv().GetSoundIdNumeric(snd)
-   if not id or not getgenv().AutoBlockSounds[id] then return end
-   local now = tick()
-   if not getgenv().SoundStartTime[snd] then
-       getgenv().SoundStartTime[snd] = now
-   end
-   local soundAge = now - getgenv().SoundStartTime[snd]
-   if soundAge > getgenv().MaxSoundAge then return end
-   if getgenv().SoundBlockedUntil[snd] and now < getgenv().SoundBlockedUntil[snd] then return end
-   local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
-   if not myRoot then return end
-   local pos,part = getgenv().GetSoundPosition(snd)
-   if not pos or not part then return end
-   local char = getgenv().GetCharFromDescendant(part)
-   local plr = char and Plrs:GetPlayerFromCharacter(char)
-   if not plr or plr == LocalP then return end
-   local hrp = char:FindFirstChild("HumanoidRootPart")
-   if not hrp then return end
-   if not getgenv().CheckAllBlockConditions(myRoot,hrp) then return end
-   getgenv().FireBlockRemote()
-   getgenv().SoundBlockedUntil[snd] = now + 0.8
+  if not getgenv().AutoBlockEnabled then return end
+  if not snd or not snd:IsA("Sound") then return end
+  if not snd.IsPlaying then return end
+  local id = getgenv().GetSoundIdNumeric(snd)
+  if not id or not getgenv().AutoBlockSounds[id] then return end
+  
+  local now = tick()
+  
+  if not getgenv().SoundStartTime[snd] then
+      getgenv().SoundStartTime[snd] = now
+  end
+  local soundAge = now - getgenv().SoundStartTime[snd]
+  if soundAge > getgenv().MaxSoundAge then return end
+  
+  if getgenv().SoundBlockedUntil[snd] and now < getgenv().SoundBlockedUntil[snd] then return end
+  
+  local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
+  if not myRoot then return end
+  local pos,part = getgenv().GetSoundPosition(snd)
+  if not pos or not part then return end
+  local char = getgenv().GetCharFromDescendant(part)
+  local plr = char and Plrs:GetPlayerFromCharacter(char)
+  if not plr or plr == LocalP then return end
+  local hrp = char:FindFirstChild("HumanoidRootPart")
+  if not hrp then return end
+  
+  if not getgenv().CheckAllBlockConditions(myRoot,hrp) then return end
+  
+  getgenv().FireBlockRemote()
+  getgenv().SoundBlockedUntil[snd] = now + 0.8
 end
 
 getgenv().AttemptBlockAnim = function(animTrack)
-   if not getgenv().AutoBlockEnabled then return end
-   if not animTrack or not animTrack.Animation then return end
-   if not animTrack.IsPlaying then return end
-   local id = getgenv().GetAnimIdNumeric(animTrack.Animation)
-   if not id or not getgenv().AutoBlockAnims[id] then return end
-   local now = tick()
-   if not getgenv().AnimStartTime[animTrack] then
-       getgenv().AnimStartTime[animTrack] = now
-   end
-   local animAge = now - getgenv().AnimStartTime[animTrack]
-   if animAge > getgenv().MaxAnimAge then return end
-   if getgenv().AnimBlockedUntil[animTrack] and now < getgenv().AnimBlockedUntil[animTrack] then return end
-   local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
-   if not myRoot then return end
-   local animator = animTrack.Parent
-   if not animator or not animator:IsA("Animator") then return end
-   local char = getgenv().GetCharFromDescendant(animator)
-   if not char then return end
-   local plr = Plrs:GetPlayerFromCharacter(char)
-   if not plr or plr == LocalP then return end
-   local hrp = char:FindFirstChild("HumanoidRootPart")
-   if not hrp then return end
-   if not getgenv().CheckAllBlockConditions(myRoot,hrp) then return end
-   getgenv().FireBlockRemote()
-   getgenv().AnimBlockedUntil[animTrack] = now + 0.8
+  if not getgenv().AutoBlockEnabled then return end
+  if not animTrack or not animTrack.Animation then return end
+  if not animTrack.IsPlaying then return end
+  local id = getgenv().GetAnimIdNumeric(animTrack.Animation)
+  if not id or not getgenv().AutoBlockAnims[id] then return end
+  
+  local now = tick()
+  
+  if not getgenv().AnimStartTime[animTrack] then
+      getgenv().AnimStartTime[animTrack] = now
+  end
+  local animAge = now - getgenv().AnimStartTime[animTrack]
+  if animAge > getgenv().MaxAnimAge then return end
+  
+  if getgenv().AnimBlockedUntil[animTrack] and now < getgenv().AnimBlockedUntil[animTrack] then return end
+  
+  local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
+  if not myRoot then return end
+  local animator = animTrack.Parent
+  if not animator or not animator:IsA("Animator") then return end
+  local char = getgenv().GetCharFromDescendant(animator)
+  if not char then return end
+  local plr = Plrs:GetPlayerFromCharacter(char)
+  if not plr or plr == LocalP then return end
+  local hrp = char:FindFirstChild("HumanoidRootPart")
+  if not hrp then return end
+  
+  if not getgenv().CheckAllBlockConditions(myRoot,hrp) then return end
+  
+  getgenv().FireBlockRemote()
+  getgenv().AnimBlockedUntil[animTrack] = now + 0.8
 end
 
 getgenv().HookSound = function(snd)
-   if not snd or not snd:IsA("Sound") then return end
-   if getgenv().SoundHooks[snd] then return end
-   local playConn = snd.Played:Connect(function()
-       getgenv().SoundStartTime[snd] = tick()
-       task.defer(getgenv().AttemptBlockSound,snd)
-   end)
-   local propConn = snd:GetPropertyChangedSignal("IsPlaying"):Connect(function()
-       if snd.IsPlaying then
-           if not getgenv().SoundStartTime[snd] then
-               getgenv().SoundStartTime[snd] = tick()
-           end
-           task.defer(getgenv().AttemptBlockSound,snd)
-       else
-           getgenv().SoundStartTime[snd] = nil
-       end
-   end)
-   local destroyConn
-   destroyConn = snd.Destroying:Connect(function()
-       if playConn.Connected then playConn:Disconnect() end
-       if propConn.Connected then propConn:Disconnect() end
-       if destroyConn.Connected then destroyConn:Disconnect() end
-       getgenv().SoundHooks[snd] = nil
-       getgenv().SoundBlockedUntil[snd] = nil
-       getgenv().SoundStartTime[snd] = nil
-   end)
-   getgenv().SoundHooks[snd] = {playConn,propConn,destroyConn}
-   if snd.IsPlaying then
-       getgenv().SoundStartTime[snd] = tick()
-       task.defer(getgenv().AttemptBlockSound,snd)
-   end
+  if not snd or not snd:IsA("Sound") then return end
+  if getgenv().SoundHooks[snd] then return end
+  
+  local playConn = snd.Played:Connect(function()
+      getgenv().SoundStartTime[snd] = tick()
+      task.defer(getgenv().AttemptBlockSound,snd)
+  end)
+  
+  local propConn = snd:GetPropertyChangedSignal("IsPlaying"):Connect(function()
+      if snd.IsPlaying then 
+          if not getgenv().SoundStartTime[snd] then
+              getgenv().SoundStartTime[snd] = tick()
+          end
+          task.defer(getgenv().AttemptBlockSound,snd)
+      else
+          getgenv().SoundStartTime[snd] = nil
+      end
+  end)
+  
+  local destroyConn
+  destroyConn = snd.Destroying:Connect(function()
+      if playConn.Connected then playConn:Disconnect() end
+      if propConn.Connected then propConn:Disconnect() end
+      if destroyConn.Connected then destroyConn:Disconnect() end
+      getgenv().SoundHooks[snd] = nil
+      getgenv().SoundBlockedUntil[snd] = nil
+      getgenv().SoundStartTime[snd] = nil
+  end)
+  
+  getgenv().SoundHooks[snd] = {playConn,propConn,destroyConn}
+  
+  if snd.IsPlaying then
+      getgenv().SoundStartTime[snd] = tick()
+      task.defer(getgenv().AttemptBlockSound,snd)
+  end
 end
 
 getgenv().HookAnimator = function(animator)
-   if not animator or not animator:IsA("Animator") then return end
-   animator.AnimationPlayed:Connect(function(animTrack)
-       pcall(function()
-           getgenv().AnimStartTime[animTrack] = tick()
-           local playConn = animTrack:GetPropertyChangedSignal("IsPlaying"):Connect(function()
-               if animTrack.IsPlaying then
-                   if not getgenv().AnimStartTime[animTrack] then
-                       getgenv().AnimStartTime[animTrack] = tick()
-                   end
-                   task.defer(getgenv().AttemptBlockAnim,animTrack)
-               else
-                   getgenv().AnimStartTime[animTrack] = nil
-               end
-           end)
-           animTrack.Stopped:Connect(function()
-               if playConn.Connected then playConn:Disconnect() end
-               getgenv().AnimBlockedUntil[animTrack] = nil
-               getgenv().AnimStartTime[animTrack] = nil
-           end)
-           if animTrack.IsPlaying then
-               task.defer(getgenv().AttemptBlockAnim,animTrack)
-           end
-       end)
-   end)
+  if not animator or not animator:IsA("Animator") then return end
+  animator.AnimationPlayed:Connect(function(animTrack)
+      pcall(function()
+          getgenv().AnimStartTime[animTrack] = tick()
+          
+          local playConn = animTrack:GetPropertyChangedSignal("IsPlaying"):Connect(function()
+              if animTrack.IsPlaying then
+                  if not getgenv().AnimStartTime[animTrack] then
+                      getgenv().AnimStartTime[animTrack] = tick()
+                  end
+                  task.defer(getgenv().AttemptBlockAnim,animTrack)
+              else
+                  getgenv().AnimStartTime[animTrack] = nil
+              end
+          end)
+          
+          animTrack.Stopped:Connect(function()
+              if playConn.Connected then playConn:Disconnect() end
+              getgenv().AnimBlockedUntil[animTrack] = nil
+              getgenv().AnimStartTime[animTrack] = nil
+          end)
+          
+          if animTrack.IsPlaying then
+              task.defer(getgenv().AttemptBlockAnim,animTrack)
+          end
+      end)
+  end)
 end
 
 for _,d in ipairs(game:GetDescendants()) do
-   if d:IsA("Sound") then pcall(getgenv().HookSound,d) end
-   if d:IsA("Animator") then pcall(getgenv().HookAnimator,d) end
+  if d:IsA("Sound") then pcall(getgenv().HookSound,d) end
+  if d:IsA("Animator") then pcall(getgenv().HookAnimator,d) end
 end
 
 game.DescendantAdded:Connect(function(d)
-   if d:IsA("Sound") then task.defer(getgenv().HookSound,d) end
-   if d:IsA("Animator") then task.defer(getgenv().HookAnimator,d) end
+  if d:IsA("Sound") then task.defer(getgenv().HookSound,d) end
+  if d:IsA("Animator") then task.defer(getgenv().HookAnimator,d) end
 end)
 
 getgenv().CreateBoxVisualization = function(killer)
-   if not killer or not killer:FindFirstChild("HumanoidRootPart") then return nil end
-   local killerRoot = killer.HumanoidRootPart
-   local folder = Instance.new("Folder")
-   folder.Name = "BoxVisualization"
-   folder.Parent = killerRoot
-   local box = Instance.new("Part")
-   box.Name = "DetectionBox"
-   box.Material = Enum.Material.ForceField
-   box.Anchored = true
-   box.CanCollide = false
-   box.Transparency = getgenv().BoxTransparency
-   box.Color = getgenv().BoxDangerColor
-   box.Size = Vector3.new(
-       getgenv().BoxWidth * getgenv().BoxSizeMultiplier,
-       getgenv().BoxHeight * getgenv().BoxSizeMultiplier,
-       getgenv().BoxLength * getgenv().BoxSizeMultiplier
-   )
-   box.Parent = folder
-   return {folder = folder, box = box, killer = killer}
+  if not killer or not killer:FindFirstChild("HumanoidRootPart") then return nil end
+  local killerRoot = killer.HumanoidRootPart
+  
+  local folder = Instance.new("Folder")
+  folder.Name = "BoxVisualization"
+  folder.Parent = killerRoot
+  
+  local box = Instance.new("Part")
+  box.Name = "DetectionBox"
+  box.Material = Enum.Material.ForceField
+  box.Anchored = true
+  box.CanCollide = false
+  box.Transparency = getgenv().BoxTransparency
+  box.Color = getgenv().BoxDangerColor
+  box.Size = Vector3.new(
+      getgenv().BoxWidth * getgenv().BoxSizeMultiplier, 
+      getgenv().BoxHeight * getgenv().BoxSizeMultiplier, 
+      getgenv().BoxLength * getgenv().BoxSizeMultiplier
+  )
+  box.Parent = folder
+  
+  return {folder = folder, box = box, killer = killer}
 end
 
 getgenv().UpdateBoxVisualization = function(visData, myRoot)
-   if not visData or not visData.folder or not visData.folder.Parent then return end
-   if not myRoot or not visData.killer or not visData.killer:FindFirstChild("HumanoidRootPart") then return end
-   local killerRoot = visData.killer.HumanoidRootPart
-   local forward = killerRoot.CFrame.LookVector
-   local effectiveLength = getgenv().BoxLength * getgenv().BoxSizeMultiplier
-   local forwardOffset = forward * ((effectiveLength/2) + getgenv().BoxForwardOffset)
-   local boxPos = killerRoot.Position + forwardOffset
-   visData.box.Size = Vector3.new(
-       getgenv().BoxWidth * getgenv().BoxSizeMultiplier,
-       getgenv().BoxHeight * getgenv().BoxSizeMultiplier,
-       effectiveLength
-   )
-   visData.box.CFrame = CFrame.lookAt(boxPos, boxPos + forward * 100)
-   visData.box.Transparency = getgenv().BoxTransparency
-   local shouldBlock = getgenv().IsPlayerInBox(myRoot, killerRoot) and getgenv().CheckAllBlockConditions(myRoot, killerRoot)
-   visData.box.Color = shouldBlock and getgenv().BoxSafeColor or getgenv().BoxDangerColor
+  if not visData or not visData.folder or not visData.folder.Parent then return end
+  if not myRoot or not visData.killer or not visData.killer:FindFirstChild("HumanoidRootPart") then return end
+  
+  local killerRoot = visData.killer.HumanoidRootPart
+  local forward = killerRoot.CFrame.LookVector
+  local effectiveLength = getgenv().BoxLength * getgenv().BoxSizeMultiplier
+  local forwardOffset = forward * ((effectiveLength/2) + getgenv().BoxForwardOffset)
+  local boxPos = killerRoot.Position + forwardOffset
+  
+  visData.box.Size = Vector3.new(
+      getgenv().BoxWidth * getgenv().BoxSizeMultiplier, 
+      getgenv().BoxHeight * getgenv().BoxSizeMultiplier, 
+      effectiveLength
+  )
+  visData.box.CFrame = CFrame.lookAt(boxPos, boxPos + forward * 100)
+  visData.box.Transparency = getgenv().BoxTransparency
+  
+  local shouldBlock = getgenv().IsPlayerInBox(myRoot, killerRoot) and getgenv().CheckAllBlockConditions(myRoot, killerRoot)
+  visData.box.Color = shouldBlock and getgenv().BoxSafeColor or getgenv().BoxDangerColor
 end
 
 getgenv().AddBoxVisualization = function(killer)
-   if not killer:FindFirstChild("HumanoidRootPart") then return end
-   if getgenv().BoxVisualizations[killer] then return end
-   local visData = getgenv().CreateBoxVisualization(killer)
-   getgenv().BoxVisualizations[killer] = visData
+  if not killer:FindFirstChild("HumanoidRootPart") then return end
+  if getgenv().BoxVisualizations[killer] then return end
+  
+  local visData = getgenv().CreateBoxVisualization(killer)
+  getgenv().BoxVisualizations[killer] = visData
 end
 
 getgenv().RemoveBoxVisualization = function(killer)
-   if getgenv().BoxVisualizations[killer] then
-       if getgenv().BoxVisualizations[killer].folder then
-           getgenv().BoxVisualizations[killer].folder:Destroy()
-       end
-       getgenv().BoxVisualizations[killer] = nil
-   end
+  if getgenv().BoxVisualizations[killer] then
+      if getgenv().BoxVisualizations[killer].folder then
+          getgenv().BoxVisualizations[killer].folder:Destroy()
+      end
+      getgenv().BoxVisualizations[killer] = nil
+  end
 end
 
 getgenv().RefreshBoxVisualizations = function()
-   for killer, _ in pairs(getgenv().BoxVisualizations) do
-       getgenv().RemoveBoxVisualization(killer)
-   end
-   if getgenv().BoxVisualizationEnabled then
-       for _,killer in ipairs(getgenv().KillersFolder:GetChildren()) do
-           getgenv().AddBoxVisualization(killer)
-       end
-   end
+  for killer, _ in pairs(getgenv().BoxVisualizations) do
+      getgenv().RemoveBoxVisualization(killer)
+  end
+  
+  if getgenv().AutoBlockEnabled then
+      for _,killer in ipairs(getgenv().KillersFolder:GetChildren()) do
+          getgenv().AddBoxVisualization(killer)
+      end
+  end
 end
 
+-- Hitbox可视化功能
 getgenv().GetKillerUsernames = function()
-   local killerNames = {}
-   if Workspace:FindFirstChild("Players") then
-       local playersFolder = Workspace.Players
-       if playersFolder:FindFirstChild("Killers") then
-           local killersFolder = playersFolder.Killers
-           for _, killerModel in pairs(killersFolder:GetChildren()) do
-               local killerPlayer = Players:GetPlayerFromCharacter(killerModel)
-               if killerPlayer then
-                   table.insert(killerNames, killerPlayer.Name)
-               else
-                   table.insert(killerNames, killerModel.Name)
-               end
-           end
-       end
-   end
-   return killerNames
+  local killerNames = {}
+  
+  if Workspace:FindFirstChild("Players") then
+      local playersFolder = Workspace.Players
+      if playersFolder:FindFirstChild("Killers") then
+          local killersFolder = playersFolder.Killers
+          
+          for _, killerModel in pairs(killersFolder:GetChildren()) do
+              local killerPlayer = Players:GetPlayerFromCharacter(killerModel)
+              if killerPlayer then
+                  table.insert(killerNames, killerPlayer.Name)
+              else
+                  table.insert(killerNames, killerModel.Name)
+              end
+          end
+      end
+  end
+  
+  return killerNames
 end
 
 getgenv().FindKillerHitboxes = function()
@@ -1827,308 +1873,325 @@ getgenv().FindKillerHitboxes = function()
 end
 
 getgenv().EnlargeHitbox = function(hitbox)
-   if hitbox and hitbox:IsA("BasePart") then
-       if not getgenv().processedHitboxes[hitbox] then
-           getgenv().processedHitboxes[hitbox] = {
-               originalSize = hitbox.Size,
-               originalColor = hitbox.Color,
-               originalTransparency = hitbox.Transparency,
-               originalMaterial = hitbox.Material
-           }
-           local multiplier = getgenv().BoxSizeMultiplier
-           hitbox.Size = hitbox.Size * multiplier
-           hitbox.Color = getgenv().HitboxColor
-           hitbox.Transparency = getgenv().HitboxTransparency
-       else
-           local multiplier = getgenv().BoxSizeMultiplier
-           local original = getgenv().processedHitboxes[hitbox]
-           hitbox.Size = original.originalSize * multiplier
-           hitbox.Color = getgenv().HitboxColor
-           hitbox.Transparency = getgenv().HitboxTransparency
-       end
-   end
+  if hitbox and hitbox:IsA("BasePart") then
+      if not getgenv().processedHitboxes[hitbox] then
+          getgenv().processedHitboxes[hitbox] = {
+              originalSize = hitbox.Size,
+              originalColor = hitbox.Color,
+              originalTransparency = hitbox.Transparency,
+              originalMaterial = hitbox.Material
+          }
+          
+          -- 使用与Box相同的大小倍数
+          local multiplier = getgenv().BoxSizeMultiplier
+          hitbox.Size = hitbox.Size * multiplier
+          hitbox.Color = getgenv().HitboxColor
+          hitbox.Transparency = getgenv().HitboxTransparency
+      else
+          -- 更新已存在的hitbox
+          local multiplier = getgenv().BoxSizeMultiplier
+          local original = getgenv().processedHitboxes[hitbox]
+          hitbox.Size = original.originalSize * multiplier
+          hitbox.Color = getgenv().HitboxColor
+          hitbox.Transparency = getgenv().HitboxTransparency
+      end
+  end
 end
 
 getgenv().StartHitboxVisualization = function()
-   if getgenv().hitboxDetectionLoop then return end
-   getgenv().hitboxDetectionLoop = RSvc.Heartbeat:Connect(function()
-       if not getgenv().HitboxVisualizationEnabled then return end
-       local hitboxes = getgenv().FindKillerHitboxes()
-       for hitbox, _ in pairs(hitboxes) do
-           pcall(getgenv().EnlargeHitbox, hitbox)
-       end
-   end)
-   print("杀手Hitbox可视化已启用")
+  if getgenv().hitboxDetectionLoop then return end
+  
+  getgenv().hitboxDetectionLoop = RSvc.Heartbeat:Connect(function()
+      if not getgenv().HitboxVisualizationEnabled then return end
+      
+      local hitboxes = getgenv().FindKillerHitboxes()
+      
+      for hitbox, _ in pairs(hitboxes) do
+          pcall(getgenv().EnlargeHitbox, hitbox)
+      end
+  end)
+  
+  print("杀手Hitbox可视化已启用")
 end
 
 getgenv().StopHitboxVisualization = function()
-   if getgenv().hitboxDetectionLoop then
-       getgenv().hitboxDetectionLoop:Disconnect()
-       getgenv().hitboxDetectionLoop = nil
-   end
-   for hitbox, originalData in pairs(getgenv().processedHitboxes) do
-       if hitbox and hitbox.Parent then
-           pcall(function()
-               hitbox.Size = originalData.originalSize
-               hitbox.Color = originalData.originalColor
-               hitbox.Transparency = originalData.originalTransparency
-           end)
-       end
-   end
-   getgenv().processedHitboxes = {}
-   print("杀手Hitbox可视化已停止")
+  if getgenv().hitboxDetectionLoop then
+      getgenv().hitboxDetectionLoop:Disconnect()
+      getgenv().hitboxDetectionLoop = nil
+  end
+  
+  -- 恢复所有处理过的hitbox
+  for hitbox, originalData in pairs(getgenv().processedHitboxes) do
+      if hitbox and hitbox.Parent then
+          pcall(function()
+              hitbox.Size = originalData.originalSize
+              hitbox.Color = originalData.originalColor
+              hitbox.Transparency = originalData.originalTransparency
+          end)
+      end
+  end
+  
+  getgenv().processedHitboxes = {}
+  print("杀手Hitbox可视化已停止")
 end
 
 RSvc.Heartbeat:Connect(function()
-   if not getgenv().BoxVisualizationEnabled then return end
-   local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
-   if not myRoot then return end
-   for killer, visData in pairs(getgenv().BoxVisualizations) do
-       if killer:FindFirstChild("HumanoidRootPart") then
-           pcall(getgenv().UpdateBoxVisualization, visData, myRoot)
-       end
-   end
+  if not getgenv().AutoBlockEnabled then return end
+  
+  local myRoot = LocalP.Character and LocalP.Character:FindFirstChild("HumanoidRootPart")
+  if not myRoot then return end
+  
+  for killer, visData in pairs(getgenv().BoxVisualizations) do
+      if killer:FindFirstChild("HumanoidRootPart") then
+          pcall(getgenv().UpdateBoxVisualization, visData, myRoot)
+      end
+  end
 end)
 
 getgenv().KillersFolder.ChildAdded:Connect(function(killer)
-   if getgenv().BoxVisualizationEnabled then
-       task.spawn(function()
-           local hrp = killer:WaitForChild("HumanoidRootPart",5)
-           if hrp then getgenv().AddBoxVisualization(killer) end
-       end)
-   end
+  if getgenv().AutoBlockEnabled then
+      task.spawn(function()
+          local hrp = killer:WaitForChild("HumanoidRootPart",5)
+          if hrp then getgenv().AddBoxVisualization(killer) end
+      end)
+  end
 end)
 
 getgenv().KillersFolder.ChildRemoved:Connect(function(killer)
-   getgenv().RemoveBoxVisualization(killer)
+  getgenv().RemoveBoxVisualization(killer)
 end)
 
+-- UI部分
 local MainBlockTab = Tabs.Block:AddRightTabbox()
 local MainGroup = MainBlockTab:AddTab("Block")
 local BoxGroup = MainBlockTab:AddTab("Box设置")
 local HitboxGroup = MainBlockTab:AddTab("Hitbox视觉")
 
 MainGroup:AddToggle("AutoBlockToggle",{
-   Text = "自动格挡",
-   Default = false,
-   Tooltip = "开启/关闭自动格挡",
-   Callback = function(Value)
-       getgenv().AutoBlockEnabled = Value
-   end,
+  Text = "自动格挡",
+  Default = false,
+  Tooltip = "开启/关闭自动格挡和Box可视化",
+  Callback = function(Value)
+      getgenv().AutoBlockEnabled = Value
+      getgenv().RefreshBoxVisualizations()
+  end,
 })
 
 MainGroup:AddToggle("KillerFacingCheck",{
-   Text = "杀手面向检测",
-   Default = false,
-   Tooltip = "仅在杀手面向玩家时格挡",
-   Callback = function(Value)
-       getgenv().KillerFacingCheckEnabled = Value
-   end,
+  Text = "杀手面向检测",
+  Default = false,
+  Tooltip = "仅在杀手面向玩家时格挡",
+  Callback = function(Value)
+      getgenv().KillerFacingCheckEnabled = Value
+  end,
 })
 
 MainGroup:AddToggle("WallCheck",{
-   Text = "Wallcheck",
-   Default = false,
-   Tooltip = "检测是否有墙体遮挡",
-   Callback = function(Value)
-       getgenv().wallCheckEnabled = Value
-   end,
+  Text = "Wallcheck",
+  Default = false,
+  Tooltip = "检测是否有墙体遮挡",
+  Callback = function(Value)
+      getgenv().wallCheckEnabled = Value
+  end,
 })
 
 MainGroup:AddSlider("KillerFacingAngle",{
-   Text = "杀手面向角度",
-   Default = 90,
-   Min = 30,
-   Max = 180,
-   Rounding = 1,
-   Tooltip = "杀手面向玩家的角度检测",
-   Callback = function(Value)
-       getgenv().KillerFacingAngle = Value
-   end,
+  Text = "杀手面向角度",
+  Default = 90,
+  Min = 30,
+  Max = 180,
+  Rounding = 1,
+  Tooltip = "杀手面向玩家的角度检测",
+  Callback = function(Value)
+      getgenv().KillerFacingAngle = Value
+  end,
 })
 
 MainGroup:AddSlider("MaxSoundAge",{
-   Text = "最大声音检测时长(秒)",
-   Default = 1.2,
-   Min = 0.5,
-   Max = 5,
-   Rounding = 1,
-   Tooltip = "声音播放超过此时长后将被忽略",
-   Callback = function(Value)
-       getgenv().MaxSoundAge = Value
-   end,
+  Text = "最大声音检测时长(秒)",
+  Default = 1.2,
+  Min = 0.5,
+  Max = 5,
+  Rounding = 1,
+  Tooltip = "声音播放超过此时长后将被忽略",
+  Callback = function(Value)
+      getgenv().MaxSoundAge = Value
+  end,
 })
 
 MainGroup:AddSlider("MaxAnimAge",{
-   Text = "最大动画检测时长(秒)",
-   Default = 1.5,
-   Min = 0.5,
-   Max = 5,
-   Rounding = 1,
-   Tooltip = "动画播放超过此时长后将被忽略",
-   Callback = function(Value)
-       getgenv().MaxAnimAge = Value
-   end,
+  Text = "最大动画检测时长(秒)",
+  Default = 1.5,
+  Min = 0.5,
+  Max = 5,
+  Rounding = 1,
+  Tooltip = "动画播放超过此时长后将被忽略",
+  Callback = function(Value)
+      getgenv().MaxAnimAge = Value
+  end,
 })
 
+-- Box设置
 BoxGroup:AddSlider("BoxLength",{
-   Text = "Box长度",
-   Default = 7.5,
-   Min = 1,
-   Max = 15,
-   Rounding = 1,
-   Tooltip = "Box的长度(未应用倍数前)",
-   Callback = function(Value)
-       getgenv().BoxLength = Value
-   end,
+  Text = "Box长度",
+  Default = 4,
+  Min = 5,
+  Max = 50,
+  Rounding = 1,
+  Tooltip = "Box的长度(未应用倍数前)",
+  Callback = function(Value)
+      getgenv().BoxLength = Value
+  end,
 })
 
 BoxGroup:AddSlider("BoxWidth",{
-   Text = "Box宽度",
-   Default = 4.5,
-   Min = 2,
-   Max = 15,
-   Rounding = 1,
-   Tooltip = "Box的宽度(未应用倍数前)",
-   Callback = function(Value)
-       getgenv().BoxWidth = Value
-   end,
+  Text = "Box宽度",
+  Default = 6,
+  Min = 2,
+  Max = 30,
+  Rounding = 1,
+  Tooltip = "Box的宽度(未应用倍数前)",
+  Callback = function(Value)
+      getgenv().BoxWidth = Value
+  end,
 })
 
 BoxGroup:AddSlider("BoxHeight",{
-   Text = "Box高度",
-   Default = 6,
-   Min = 2,
-   Max = 10,
-   Rounding = 1,
-   Tooltip = "Box的高度(未应用倍数前)",
-   Callback = function(Value)
-       getgenv().BoxHeight = Value
-   end,
+  Text = "Box高度",
+  Default = 8,
+  Min = 2,
+  Max = 30,
+  Rounding = 1,
+  Tooltip = "Box的高度(未应用倍数前)",
+  Callback = function(Value)
+      getgenv().BoxHeight = Value
+  end,
 })
 
 BoxGroup:AddSlider("BoxSizeMultiplier",{
-   Text = "Box整体大小倍数",
-   Default = 1.0,
-   Min = 0.5,
-   Max = 3.0,
-   Rounding = 2,
-   Tooltip = "Box整体大小的放大倍数",
-   Callback = function(Value)
-       getgenv().BoxSizeMultiplier = Value
-   end,
+  Text = "Box整体大小倍数",
+  Default = 1.0,
+  Min = 0.5,
+  Max = 2.0,
+  Rounding = 2,
+  Tooltip = "Box整体大小的放大倍数",
+  Callback = function(Value)
+      getgenv().BoxSizeMultiplier = Value
+  end,
 })
 
 BoxGroup:AddSlider("BoxForwardOffset",{
-   Text = "Box前后位置",
-   Default = 1.4,
-   Min = -10,
-   Max = 10,
-   Rounding = 1,
-   Tooltip = "Box在杀手前后方向的偏移(负数向后,正数向前)",
-   Callback = function(Value)
-       getgenv().BoxForwardOffset = Value
-   end,
+  Text = "Box前后位置",
+  Default = 0,
+  Min = -20,
+  Max = 20,
+  Rounding = 1,
+  Tooltip = "Box在杀手前后方向的偏移(负数向后,正数向前)",
+  Callback = function(Value)
+      getgenv().BoxForwardOffset = Value
+  end,
 })
 
 BoxGroup:AddSlider("BoxTransparency",{
-   Text = "Box透明度",
-   Default = 0.7,
-   Min = 0,
-   Max = 1,
-   Rounding = 2,
-   Tooltip = "Box的透明度(0=完全不透明,1=完全透明)",
-   Callback = function(Value)
-       getgenv().BoxTransparency = Value
-   end,
+  Text = "Box透明度",
+  Default = 0.7,
+  Min = 0,
+  Max = 1,
+  Rounding = 2,
+  Tooltip = "Box的透明度(0=完全不透明,1=完全透明)",
+  Callback = function(Value)
+      getgenv().BoxTransparency = Value
+  end,
 })
 
 BoxGroup:AddLabel("Box安全颜色 (玩家在范围内):")
 BoxGroup:AddSlider("BoxSafeColorR",{
-   Text = "红色 (R)",
-   Default = 0,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxSafeColor
-       getgenv().BoxSafeColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
-   end,
+  Text = "红色 (R)",
+  Default = 0,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxSafeColor
+      getgenv().BoxSafeColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
+  end,
 })
 
 BoxGroup:AddSlider("BoxSafeColorG",{
-   Text = "绿色 (G)",
-   Default = 255,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxSafeColor
-       getgenv().BoxSafeColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
-   end,
+  Text = "绿色 (G)",
+  Default = 255,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxSafeColor
+      getgenv().BoxSafeColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
+  end,
 })
 
 BoxGroup:AddSlider("BoxSafeColorB",{
-   Text = "蓝色 (B)",
-   Default = 0,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxSafeColor
-       getgenv().BoxSafeColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
-   end,
+  Text = "蓝色 (B)",
+  Default = 0,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxSafeColor
+      getgenv().BoxSafeColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
+  end,
 })
 
 BoxGroup:AddLabel("Box危险颜色 (玩家不在范围内):")
+
 BoxGroup:AddSlider("BoxDangerColorR",{
-   Text = "红色 (R)",
-   Default = 255,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxDangerColor
-       getgenv().BoxDangerColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
-   end,
+  Text = "红色 (R)",
+  Default = 255,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxDangerColor
+      getgenv().BoxDangerColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
+  end,
 })
 
 BoxGroup:AddSlider("BoxDangerColorG",{
-   Text = "绿色 (G)",
-   Default = 0,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxDangerColor
-       getgenv().BoxDangerColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
-   end,
+  Text = "绿色 (G)",
+  Default = 0,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxDangerColor
+      getgenv().BoxDangerColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
+  end,
 })
 
 BoxGroup:AddSlider("BoxDangerColorB",{
-   Text = "蓝色 (B)",
-   Default = 0,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().BoxDangerColor
-       getgenv().BoxDangerColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
-   end,
+  Text = "蓝色 (B)",
+  Default = 0,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().BoxDangerColor
+      getgenv().BoxDangerColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
+  end,
 })
 
+-- Hitbox视觉效果设置
 HitboxGroup:AddToggle("HitboxVisualization",{
-   Text = "启用Hitbox视觉效果",
-   Default = false,
-   Tooltip = "显示放大的杀手Hitbox(大小与Box一致)",
-   Callback = function(Value)
-       getgenv().HitboxVisualizationEnabled = Value
-       if Value then
-           getgenv().StartHitboxVisualization()
-       else
-           getgenv().StopHitboxVisualization()
-       end
-   end,
+  Text = "启用Hitbox视觉效果",
+  Default = false,
+  Tooltip = "显示放大的杀手Hitbox(大小与Box一致)",
+  Callback = function(Value)
+      getgenv().HitboxVisualizationEnabled = Value
+      if Value then
+          getgenv().StartHitboxVisualization()
+      else
+          getgenv().StopHitboxVisualization()
+      end
+  end,
 })
 
 HitboxGroup:AddToggle("BoxVisualizationToggle",{
@@ -2142,52 +2205,52 @@ HitboxGroup:AddToggle("BoxVisualizationToggle",{
 })
 
 HitboxGroup:AddSlider("HitboxTransparency",{
-   Text = "Hitbox透明度",
-   Default = 0.5,
-   Min = 0,
-   Max = 1,
-   Rounding = 2,
-   Tooltip = "Hitbox的透明度",
-   Callback = function(Value)
-       getgenv().HitboxTransparency = Value
-   end,
+  Text = "Hitbox透明度",
+  Default = 0.5,
+  Min = 0,
+  Max = 1,
+  Rounding = 2,
+  Tooltip = "Hitbox的透明度",
+  Callback = function(Value)
+      getgenv().HitboxTransparency = Value
+  end,
 })
 
 HitboxGroup:AddLabel("Hitbox颜色:")
 HitboxGroup:AddSlider("HitboxColorR",{
-   Text = "红色 (R)",
-   Default = 255,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().HitboxColor
-       getgenv().HitboxColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
-   end,
+  Text = "红色 (R)",
+  Default = 255,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().HitboxColor
+      getgenv().HitboxColor = Color3.fromRGB(Value, current.G * 255, current.B * 255)
+  end,
 })
 
 HitboxGroup:AddSlider("HitboxColorG",{
-   Text = "绿色 (G)",
-   Default = 255,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().HitboxColor
-       getgenv().HitboxColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
-   end,
+  Text = "绿色 (G)",
+  Default = 255,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().HitboxColor
+      getgenv().HitboxColor = Color3.fromRGB(current.R * 255, Value, current.B * 255)
+  end,
 })
 
 HitboxGroup:AddSlider("HitboxColorB",{
-   Text = "蓝色 (B)",
-   Default = 255,
-   Min = 0,
-   Max = 255,
-   Rounding = 0,
-   Callback = function(Value)
-       local current = getgenv().HitboxColor
-       getgenv().HitboxColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
-   end,
+  Text = "蓝色 (B)",
+  Default = 255,
+  Min = 0,
+  Max = 255,
+  Rounding = 0,
+  Callback = function(Value)
+      local current = getgenv().HitboxColor
+      getgenv().HitboxColor = Color3.fromRGB(current.R * 255, current.G * 255, Value)
+  end,
 })
 
 if getgenv().ExistingConnections then
@@ -2205,7 +2268,7 @@ getgenv().RunService = game:GetService("RunService")
 getgenv().LocalPlayer = getgenv().Players.LocalPlayer
 getgenv().ReplicatedStorage = game:GetService("ReplicatedStorage")
 getgenv().buffer = buffer or require(getgenv().ReplicatedStorage.Buffer)
-getgenv().RemoteEvent = getgenv().ReplicatedStorage:WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent")
+getgenv().RemoteEvent = getgenv().Rep
 
 local Plrs = getgenv().Players
 local RSvc = getgenv().RunService
@@ -2347,17 +2410,10 @@ getgenv().AutoBlockAnims = {
 }
 
 getgenv().PunchAnims = {
-    "103601716322988","133491532453922","86371356500204",
-    "76649505662612","81698196845041","111918351126361",
-    "77894750279891","99050723653468","119181003138006",
-    "18885919947","106527725058030","139929602101552"
-}
-
-getgenv().PunchAnims = {
-    "103601716322988","133491532453922","86371356500204",
-    "76649505662612","81698196845041","111918351126361",
-    "77894750279891","99050723653468","119181003138006",
-    "18885919947","106527725058030","139929602101552"
+    ["108911997126897"]=true,["82137285150006"]=true,["129843313690921"]=true,
+    ["140703210927645"]=true,["136007065400978"]=true,["86096387000557"]=true,
+    ["87259391926321"]=true,["86709774283672"]=true,["108807732150251"]=true,
+    ["138040001965654"]=true
 }
 
 getgenv().AutoBlockEnabled = false
@@ -2415,13 +2471,23 @@ getgenv().FireBlockRemote = function()
     local now = tick()
     if now - getgenv().lastBlockTime < getgenv().blockCooldown then return end
     getgenv().lastBlockTime = now
-    local args = {"UseActorAbility", {buffer.fromstring("\3\5\0\0\0Block")}}
-    game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+    pcall(function()
+        local args = {
+            "UseActorAbility",
+            { buffer.fromstring("\003\005\000\000\000Block") }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+    end)
 end
 
 getgenv().fireRemotePunch = function()
-    local args = {"UseActorAbility", {buffer.fromstring("\3\5\0\0\0Punch")}}
-    game:GetService("ReplicatedStorage").Modules.Network.RemoteEvent:FireServer(unpack(args))
+    pcall(function()
+        local args = {
+            "UseActorAbility",
+            { buffer.fromstring("\003\005\000\000\000Punch") }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("RemoteEvent"):FireServer(unpack(args))
+    end)
     
     local closest = getgenv().getClosestKiller()
     if closest then
@@ -2429,7 +2495,7 @@ getgenv().fireRemotePunch = function()
         getgenv().faceKillerUntil = tick() + getgenv().faceKillerDuration
     end
 end
-
+    
 getgenv().IsPlayerFacingKiller = function(myRoot,killerRoot)
     if not getgenv().FacingCheckEnabled then return true end
     if not myRoot or not killerRoot then return false end
@@ -3189,11 +3255,11 @@ getgenv().RunService.RenderStepped:Connect(function()
     end
 end)
 
-getgenv().PunchAnims = {
-    "103601716322988","133491532453922","86371356500204",
-    "76649505662612","81698196845041","111918351126361",
-    "77894750279891","99050723653468","119181003138006",
-    "18885919947","106527725058030","139929602101552"
+getgenv().punchAnimIds = {
+    "108911997126897","82137285150006","129843313690921",
+    "140703210927645","136007065400978","86096387000557",
+    "87259391926321","86709774283672","108807732150251",
+    "138040001965654"
 }
 
 getgenv().killerNames = {"c00lkidd","Jason","JohnDoe","1x1x1x1","Noli","Slasher","Sixer","Nosferatu"}
@@ -4779,7 +4845,7 @@ CreateHitboxFeatures()
 
 local function CreateFeatures()
     if not Tabs or not Tabs.tfz then
-        warn
+        warn("UI 容器未找到")
         return
     end
 
@@ -4787,8 +4853,14 @@ local function CreateFeatures()
 
     local player = game.Players.LocalPlayer
     if not player then
-        warn
+        warn("无法获取 LocalPlayer")
         return
+    end
+
+    local function getEventName()
+        local currentPlayer = game.Players.LocalPlayer
+        if not currentPlayer then return nil end
+        return "" .. currentPlayer.Name .. "NosEndFlight"
     end
 
     local function updateEventLabel(text)
@@ -4800,7 +4872,7 @@ local function CreateFeatures()
         elseif eventLabel.ChangeText then
             eventLabel:ChangeText(text)
         else
-            warn
+            warn("无法更新标签，请手动检查 UI 库")
         end
     end
 
@@ -4833,10 +4905,9 @@ local function CreateFeatures()
     end
 
     local function fireVampireEvent()
-        local player = game.Players.LocalPlayer
-        if not player then return end
+        local eventName = getEventName()
+        if not eventName then return end
 
-        local eventName = player.Name .. "NosEndFlight"
         if vampireRunning then
             updateEventLabel("吸血鬼事件: " .. eventName)
         end
@@ -4887,9 +4958,9 @@ local function CreateFeatures()
             vampireRunning = state
             vampireThread = nil
             if state then
-                local player = game.Players.LocalPlayer
-                if player then
-                    updateEventLabel("吸血鬼事件: " .. player.Name .. "NosEndFlight")
+                local eventName = getEventName()
+                if eventName then
+                    updateEventLabel("吸血鬼事件: " .. eventName)
                 end
                 vampireThread = task.spawn(function()
                     while vampireRunning do
@@ -5092,232 +5163,6 @@ ZZ:AddToggle("VoidRushOverride", {
                 end
             end)
         end
-    end
-})
-
-local ZZ = Tabs.ani:AddRightGroupbox('1x4反效果')local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local LocalPlayer = Players.LocalPlayer
-local RemoteEvent = ReplicatedStorage.Modules.Network.RemoteEvent
-
-local AutoPopup = {
-    Enabled = false,
-    Task = nil,
-    Connections = {},
-    Interval = 0.5
-}
-
-local function deletePopups()
-    if not LocalPlayer or not LocalPlayer:FindFirstChild("PlayerGui") then
-        return false
-    end
-    
-    local tempUI = LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI")
-    if not tempUI then
-        return false
-    end
-    
-    local deleted = false
-    for _, popup in ipairs(tempUI:GetChildren()) do
-        if popup.Name == "1x1x1x1Popup" then
-            popup:Destroy()
-            deleted = true
-        end
-    end
-    return deleted
-end
-
-local function triggerEntangled()
-    pcall(function()
-        RemoteEvent:FireServer(
-            "Entangled",
-            {}
-        )
-    end)
-end
-
-local function setupPopupListener()
-    if not LocalPlayer or not LocalPlayer:FindFirstChild("PlayerGui") then return end
-    
-    local tempUI = LocalPlayer.PlayerGui:FindFirstChild("TemporaryUI")
-    if not tempUI then
-        tempUI = Instance.new("Folder")
-        tempUI.Name = "TemporaryUI"
-        tempUI.Parent = LocalPlayer.PlayerGui
-    end
-    
-    if AutoPopup.Connections.ChildAdded then
-        AutoPopup.Connections.ChildAdded:Disconnect()
-    end
-    
-    AutoPopup.Connections.ChildAdded = tempUI.ChildAdded:Connect(function(child)
-        if AutoPopup.Enabled and child.Name == "1x1x1x1Popup" then
-            task.defer(function()
-                child:Destroy()
-                triggerEntangled()
-            end)
-        end
-    end)
-end
-
-local function runMainTask()
-    while AutoPopup.Enabled do
-        deletePopups()
-        task.wait(AutoPopup.Interval)
-    end
-end
-
-local function startAutoPopup()
-    if AutoPopup.Enabled then return end
-    
-    AutoPopup.Enabled = true
-    setupPopupListener()
-    
-    if AutoPopup.Task then
-        task.cancel(AutoPopup.Task)
-    end
-    AutoPopup.Task = task.spawn(runMainTask)
-end
-
-local function stopAutoPopup()
-    if not AutoPopup.Enabled then return end
-    
-    AutoPopup.Enabled = false
-    
-    if AutoPopup.Task then
-        task.cancel(AutoPopup.Task)
-        AutoPopup.Task = nil
-    end
-    
-    for _, connection in pairs(AutoPopup.Connections) do
-        connection:Disconnect()
-    end
-    AutoPopup.Connections = {}
-end
-
-ZZ:AddSlider('AutoPopupInterval', {
-    Text = '执行间隔(s)',
-    Default = 0.5,
-    Min = 0.5,
-    Max = 2,
-    Rounding = 0,
-    Tooltip = '设置自动执行的间隔时间(1-5秒)',
-    Callback = function(value)
-        AutoPopup.Interval = value
-    end
-})
-
-ZZ:AddToggle('AutoPopupToggle', {
-    Text = '反弹窗',
-    Default = false,
-    Tooltip = '去除弹窗和懒惰效果',
-    Callback = function(state)
-        if state then
-            startAutoPopup()
-        else
-            stopAutoPopup()
-        end
-    end
-})
-
-if LocalPlayer then
-    LocalPlayer:GetPropertyChangedSignal("Parent"):Connect(function()
-        if not LocalPlayer.Parent then
-            stopAutoPopup()
-        end
-    end)
-end
-
-ZZ:AddToggle("RemoveUnstableEye", {
-    Text = "Anti Unstable Eye Can't walk", 
-    Default = false,
-    Callback = function(v)
-        if not _G.UnstableEyeCleanup then _G.UnstableEyeCleanup = {} end
-        local connections = _G.UnstableEyeCleanup
-
-        for _, conn in pairs(connections) do
-            if typeof(conn) == "RBXScriptConnection" then
-                conn:Disconnect()
-            end
-        end
-        _G.UnstableEyeCleanup = {}
-
-        if not v then return end
-
-        local function CleanUnstableEyeEffects()
-            local killersFolder = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers")
-            if not killersFolder then return end
-            
-            for _, killer in ipairs(killersFolder:GetDescendants()) do
-                if killer.Name == "UnstableEye" then
-                    killer:Destroy()
-                end
-            end
-        end
-
-        task.spawn(CleanUnstableEyeEffects)
-
-        connections.heartbeat = game:GetService("RunService").Heartbeat:Connect(function()
-            task.wait(1.5)
-            CleanUnstableEyeEffects()
-        end)
-
-        local killersFolder = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers")
-        if killersFolder then
-            connections.descendantAdded = killersFolder.DescendantAdded:Connect(function(descendant)
-                if descendant.Name == "UnstableEye" then
-                    descendant:Destroy()
-                end
-            end)
-        end
-    end
-})
-
-ZZ:AddToggle("RemoveBlindness", {
-    Text = "反失明", 
-    Default = false,
-    Callback = function(v)
-        if not _G.BlindnessCleanup then _G.BlindnessCleanup = {} end
-        local connections = _G.BlindnessCleanup
-
-        for _, conn in pairs(connections) do
-            if typeof(conn) == "RBXScriptConnection" then
-                conn:Disconnect()
-            end
-        end
-        _G.BlindnessCleanup = {}
-
-        if not v then return end
-
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local modulesFolder = ReplicatedStorage:FindFirstChild("Modules")
-        local statusEffects = modulesFolder and modulesFolder:FindFirstChild("StatusEffects")
-        
-        if not statusEffects then
-            warn("未找到 ReplicatedStorage.Modules.StatusEffects 路径")
-            return
-        end
-        
-        local function RemoveBlindness()
-            local blindness = statusEffects:FindFirstChild("Blindness")
-            if blindness then
-                blindness:Destroy()
-            end
-        end
-
-        task.spawn(RemoveBlindness)
-
-        connections.heartbeat = game:GetService("RunService").Heartbeat:Connect(function()
-            task.wait(1.5)
-            RemoveBlindness()
-        end)
-
-        connections.descendantAdded = statusEffects.DescendantAdded:Connect(function(descendant)
-            if descendant.Name == "Blindness" then
-                task.wait(0.1)
-                descendant:Destroy()
-            end
-        end)
     end
 })
 
