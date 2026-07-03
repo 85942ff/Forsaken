@@ -4885,7 +4885,7 @@ local function CreateFeatures()
 
     local proRunning = false
     local proThread = nil
-    local PRO_EVENT_COUNT = 2000
+    local proEventCount = 2000
     local PRO_BATCH_INTERVAL = 5
 
     local function teleportToFirstSurvivor()
@@ -4998,7 +4998,7 @@ local function CreateFeatures()
             if state then
                 proThread = task.spawn(function()
                     while proRunning do
-                        for _ = 1, PRO_EVENT_COUNT do
+                        for _ = 1, proEventCount do
                             pcall(function()
                                 local eventName = getEventName()
                                 if eventName then
@@ -5006,11 +5006,22 @@ local function CreateFeatures()
                                 end
                             end)
                         end
-                        print("已发送 " .. PRO_EVENT_COUNT .. " 个数据包 (PRO)")
+                        print("已发送 " .. proEventCount .. " 个数据包 (PRO)")
                         task.wait(PRO_BATCH_INTERVAL)
                     end
                 end)
             end
+        end
+    })
+
+    MainGroup:AddSlider("ProEventCount", {
+        Text = "Pro事件数量",
+        Default = 2000,
+        Min = 1000,
+        Max = 3000,
+        Rounding = 1,
+        Callback = function(value)
+            proEventCount = math.floor(value)
         end
     })
 end
