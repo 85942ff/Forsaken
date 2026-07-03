@@ -1486,8 +1486,9 @@ getgenv().BoxHeight = 6
 getgenv().BoxTransparency = 0.7
 getgenv().BoxSafeColor = Color3.fromRGB(0, 255, 0)
 getgenv().BoxDangerColor = Color3.fromRGB(255, 0, 0)
-getgenv().BoxSizeMultiplier = 1.0  -- Box整体大小倍数
-getgenv().BoxForwardOffset = 0  -- Box前后位置偏移
+getgenv().BoxSizeMultiplier = 1.0
+getgenv().BoxForwardOffset = 0
+getgenv().BoxVisualizationEnabled = false   -- <--- 新增独立开关
 
 -- Hitbox视觉效果设置
 getgenv().HitboxVisualizationEnabled = false
@@ -1552,7 +1553,6 @@ getgenv().IsPlayerInBox = function(myRoot, killerRoot)
   if not myRoot or not killerRoot then return false end
   
   local forward = killerRoot.CFrame.LookVector
-  -- 应用前后偏移和整体倍数
   local effectiveLength = getgenv().BoxLength * getgenv().BoxSizeMultiplier
   local forwardOffset = forward * ((effectiveLength/2) + getgenv().BoxForwardOffset)
   local boxPos = killerRoot.Position + forwardOffset
@@ -1561,7 +1561,6 @@ getgenv().IsPlayerInBox = function(myRoot, killerRoot)
   local relative = myRoot.Position - boxPos
   local localSpace = boxCFrame:VectorToObjectSpace(relative)
   
-  -- 应用整体倍数
   local halfX = (getgenv().BoxWidth * getgenv().BoxSizeMultiplier) / 2
   local halfY = (getgenv().BoxHeight * getgenv().BoxSizeMultiplier) / 2
   local halfZ = effectiveLength / 2
@@ -1822,8 +1821,7 @@ getgenv().RefreshBoxVisualizations = function()
   for killer, _ in pairs(getgenv().BoxVisualizations) do
       getgenv().RemoveBoxVisualization(killer)
   end
-  
-  if getgenv().AutoBlockEnabled then
+  if getgenv().BoxVisualizationEnabled then
       for _,killer in ipairs(getgenv().KillersFolder:GetChildren()) do
           getgenv().AddBoxVisualization(killer)
       end
@@ -1882,13 +1880,11 @@ getgenv().EnlargeHitbox = function(hitbox)
               originalMaterial = hitbox.Material
           }
           
-          -- 使用与Box相同的大小倍数
           local multiplier = getgenv().BoxSizeMultiplier
           hitbox.Size = hitbox.Size * multiplier
           hitbox.Color = getgenv().HitboxColor
           hitbox.Transparency = getgenv().HitboxTransparency
       else
-          -- 更新已存在的hitbox
           local multiplier = getgenv().BoxSizeMultiplier
           local original = getgenv().processedHitboxes[hitbox]
           hitbox.Size = original.originalSize * multiplier
@@ -1920,7 +1916,6 @@ getgenv().StopHitboxVisualization = function()
       getgenv().hitboxDetectionLoop = nil
   end
   
-  -- 恢复所有处理过的hitbox
   for hitbox, originalData in pairs(getgenv().processedHitboxes) do
       if hitbox and hitbox.Parent then
           pcall(function()
