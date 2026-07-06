@@ -4014,6 +4014,8 @@ local function CreateFeatures()
         warn("UI 容器未找到")
         return
     end
+
+    local eventLabel = MainGroup:AddLabel("")
     if not eventLabel then
         warn("无法创建标签，请检查 UI 库是否支持 AddLabel")
         eventLabel = { Text = "" }
@@ -4102,7 +4104,7 @@ local function CreateFeatures()
                     end
                 end)
             else
-                updateEventLabel("钩子事件: 已停止")
+                updateEventLabel("")
             end
         end,
     })
@@ -4142,7 +4144,7 @@ local function CreateFeatures()
                     end
                 end)
             else
-                updateEventLabel("挣脱事件: 已停止")
+                updateEventLabel("")
             end
         end,
     })
