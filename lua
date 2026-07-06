@@ -4015,11 +4015,27 @@ local function CreateFeatures()
         return
     end
 
-    local eventLabel = MainGroup:AddLabel("")
-    if not eventLabel then
-        warn("无法创建标签，请检查 UI 库是否支持 AddLabel")
-        eventLabel = { Text = "" }
+    local function getHookEventName()
+        local currentPlayer = game.Players.LocalPlayer
+        return currentPlayer and (currentPlayer.Name .. "NosHookQTE") or nil
     end
+
+    -- ===== 修改处：自动挣脱事件名改为杀手名字 + NosHookQTE =====
+    local function getEndFlightEventName()
+        local killers = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers")
+        if killers then
+            local children = killers:GetChildren()
+            if #children > 0 then
+                local firstKiller = children[1]
+                local username = firstKiller:GetAttribute("Username")
+                if username and username ~= "" then
+                    return username .. "NosHookQTE"
+                end
+            end
+        end
+        return nil
+    end
+    -- ============================================================
 
     local function updateEventLabel(text)
         if not eventLabel then return end
@@ -4034,55 +4050,22 @@ local function CreateFeatures()
         end
     end
 
-    local function getHookEventName()
-        local currentPlayer = game.Players.LocalPlayer
-        return currentPlayer and (currentPlayer.Name .. "NosHookQTE") or nil
-    end
-
-    local function getEndFlightEventName()
-        local killers = workspace:FindFirstChild("Players") and workspace.Players:FindFirstChild("Killers")
-        if killers then
-            local children = killers:GetChildren()
-            if #children > 0 then
-                local firstKiller = children[1]
-                local username = firstKiller:GetAttribute("Username")
-                if username then
-                    return username .. "NosHookQTE"
-                end
-            end
-        end
-        return nil
-    end
-
-    local function getRemoteEvent()
-        return game:GetService("ReplicatedStorage")
-            :WaitForChild("Modules")
-            :WaitForChild("Network")
-            :WaitForChild("Network")
-            :WaitForChild("RemoteEvent")
-    end
+    local hookRunning = false
+    local hookThread = nil
+    local hookInterval = 0.1
 
     local function fireHookEvent()
         local eventName = getHookEventName()
         if not eventName then return end
         pcall(function()
-            local remote = getRemoteEvent()
+            local remote = game:GetService("ReplicatedStorage")
+                :WaitForChild("Modules")
+                :WaitForChild("Network")
+                :WaitForChild("Network")
+                :WaitForChild("RemoteEvent")
             remote:FireServer(eventName, { buffer.fromstring("\001\001") })
         end)
     end
-
-    local function fireEndFlightEvent()
-        local eventName = getEndFlightEventName()
-        if not eventName then return end
-        pcall(function()
-            local remote = getRemoteEvent()
-            remote:FireServer(eventName, { buffer.fromstring("\001\001") })
-        end)
-    end
-
-    local hookRunning = false
-    local hookThread = nil
-    local hookInterval = 0.1
 
     MainGroup:AddToggle("HookToggle", {
         Text = "自动钩子",
@@ -4104,7 +4087,7 @@ local function CreateFeatures()
                     end
                 end)
             else
-                updateEventLabel("")
+                updateEventLabel("钩子事件: 已停止")
             end
         end,
     })
@@ -4123,6 +4106,19 @@ local function CreateFeatures()
     local endFlightRunning = false
     local endFlightThread = nil
     local endFlightInterval = 0.1
+
+    local function fireEndFlightEvent()
+        local eventName = getEndFlightEventName()
+        if not eventName then return end
+        pcall(function()
+            local remote = game:GetService("ReplicatedStorage")
+                :WaitForChild("Modules")
+                :WaitForChild("Network")
+                :WaitForChild("Network")
+                :WaitForChild("RemoteEvent")
+            remote:FireServer(eventName, { buffer.fromstring("\001\001") })
+        end)
+    end
 
     MainGroup:AddToggle("EndFlightToggle", {
         Text = "自动挣脱",
@@ -4144,7 +4140,7 @@ local function CreateFeatures()
                     end
                 end)
             else
-                updateEventLabel("")
+                updateEventLabel("挣脱事件: 已停止")
             end
         end,
     })
