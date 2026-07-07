@@ -1,4 +1,5 @@
 local repo = "https://raw.githubusercontent.com/SyndromeXph/NOL-Obsidian/refs/heads/main/"
+
 local Library = loadstring(game:HttpGet(repo .. "Library.lua"))()
 local ThemeManager = loadstring(game:HttpGet(repo .. "addons/ThemeManager.lua"))()
 local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
@@ -6,11 +7,12 @@ local SaveManager = loadstring(game:HttpGet(repo .. "addons/SaveManager.lua"))()
 local Options = Library.Options
 local Toggles = Library.Toggles
 
+local Options = Library.Options
+local Toggles = Library.Toggles
+
 Library.ForceCheckbox = false
 Library.ShowToggleFrameInKeybinds = true
 
-
-local LibESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/ImamGV/Script/main/ESP"))()
 
 local Services = {
     Players = game:GetService("Players"),
@@ -647,6 +649,7 @@ local Window = Library:CreateWindow({
 	ShowCustomCursor = true,
 })
 
+
 local Tabs = {
 	Bro = Window:AddTab('绘制', 'eye'),           -- 绘制
 	Block = Window:AddTab('格挡', 'user'),        -- 格挡
@@ -659,7 +662,6 @@ local Tabs = {
 	yul = Window:AddTab('娱乐功能', 'cpu'),       -- 娱乐功能
 	["UI Settings"] = Window:AddTab('UI 调试', 'settings') -- UI调试
 }
-
 
 
 local RunService = game:GetService("RunService")
