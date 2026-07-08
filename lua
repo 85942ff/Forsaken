@@ -651,17 +651,17 @@ local Window = Library:CreateWindow({
 
 
 local Tabs = {
-	Bro = Window:AddTab('绘制', 'eye'),           -- 绘制
-	Block = Window:AddTab('格挡', 'user'),        -- 格挡
-    Backstab = Window:AddTab('背刺', 'skull'),
-	Sat = Window:AddTab('体力', 'zap'),           -- 体力
-	Ability = Window:AddTab('能力', 'star'),      -- 能力（放在体力下面）
-	zdx = Window:AddTab('电机', 'printer'),       -- 电机
-	Aimbot = Window:AddTab('自瞄', 'crosshair'),  -- 自瞄
-	tfz = Window:AddTab('杀戮', 'skull'),         -- 杀戮
-	ani = Window:AddTab('反效果', 'cpu'),         -- 反效果
-	yul = Window:AddTab('娱乐功能', 'cpu'),       -- 娱乐功能
-	["UI Settings"] = Window:AddTab('UI 调试', 'settings') -- UI调试
+	Bro = Window:AddTab('绘制', 'eye'),
+	Block = Window:AddTab('格挡', 'user'),
+	Backstab = Window:AddTab('背刺', 'sword'),
+	Sat = Window:AddTab('体力', 'zap'),
+	Ability = Window:AddTab('能力', 'star'),
+	zdx = Window:AddTab('电机', 'printer'),
+	Aimbot = Window:AddTab('自瞄', 'crosshair'),
+	tfz = Window:AddTab('杀戮', 'skull'),
+	ani = Window:AddTab('反效果', 'cpu'),
+	yul = Window:AddTab('娱乐功能', 'cpu'),
+	["UI Settings"] = Window:AddTab('UI 调试', 'settings')
 }
 
 
@@ -3839,7 +3839,6 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local lp = Players.LocalPlayer
 
--- 获取远程事件（Dagger）
 local daggerRemote_Hook = nil
 task.spawn(function()
     local modules = ReplicatedStorage:WaitForChild("Modules", 10)
@@ -3868,7 +3867,6 @@ task.spawn(function()
     end
 end)
 
--- Hook 位置欺骗系统（独立于发包）
 local spoofData = _G.BackstabSpoofData
 if not spoofData then
     spoofData = {
@@ -3951,7 +3949,6 @@ local function InitPositionSpoof_Hook()
 end
 task.spawn(InitPositionSpoof_Hook)
 
--- Hook 背刺配置
 _G.Backstab = _G.Backstab or {}
 local cfgHook = _G.Backstab
 cfgHook.enabled = false
@@ -4130,7 +4127,6 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- 对外接口
 _G.Backstab.ManualTrigger = ManualBackstabHook
 _G.Backstab.SetEnabled = function(s) cfgHook.enabled = s end
 _G.Backstab.SetMode = function(m) cfgHook.currentMode = m end
@@ -4142,398 +4138,49 @@ _G.Backstab.SetTpDistance = function(v) cfgHook.tpDistance = v end
 _G.Backstab.SetAdhesionDuration = function(v) cfgHook.adhesionDuration = v end
 _G.Backstab.SetTriggerKey = function(k) cfgHook.triggerKey = k end
 
-print("Hook Backstab loaded.")
-
--- =====================================================
--- 第二部分：发包背刺核心 (_G.BackstabPacket)
--- =====================================================
--- 独立于Hook，使用自己的变量，避免冲突
-local Players2 = game:GetService("Players")
-local ReplicatedStorage2 = game:GetService("ReplicatedStorage")
-local RunService2 = game:GetService("RunService")
-local UserInputService2 = game:GetService("UserInputService")
-local lp2 = Players2.LocalPlayer
-
--- 获取远程事件（Dagger）
-local daggerRemote_Packet = nil
-task.spawn(function()
-    local modules = ReplicatedStorage2:WaitForChild("Modules", 10)
-    if modules then
-        local net1 = modules:WaitForChild("Network", 5)
-        if net1 then
-            local net2 = net1:WaitForChild("Network", 5)
-            if net2 then
-                daggerRemote_Packet = net2:WaitForChild("RemoteEvent", 5)
-            end
-        end
-    end
-end)
-
--- ==================== 构造服务器位置包系统 ====================
-local Network = ReplicatedStorage2:WaitForChild("Modules"):WaitForChild("Network"):WaitForChild("Network")
-local UnreliableRemoteEvent = Network:WaitForChild("UnreliableRemoteEvent")
-
-local b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
-
-local function base64Encode(data)
-    local result = ""
-    local padding = ""
-    if typeof(data) == "buffer" then data = buffer.readstring(data, 0, buffer.len(data)) end
-    local pad = 3 - (#data % 3)
-    if pad ~= 3 then
-        data = data .. string.rep("\0", pad)
-        padding = string.rep("=", pad)
-    end
-    for i = 1, #data, 3 do
-        local a, b, c = string.byte(data, i, i + 2)
-        local n = a * 65536 + b * 256 + c
-        local d = math.floor(n / 262144) % 64 + 1
-        local e = math.floor(n / 4096) % 64 + 1
-        local f = math.floor(n / 64) % 64 + 1
-        local g = n % 64 + 1
-        result = result .. b64chars:sub(d, d) .. b64chars:sub(e, e) .. b64chars:sub(f, f) .. b64chars:sub(g, g)
-    end
-    return result:sub(1, -1 - #padding) .. padding
-end
-
-local function buildPositionPacket(x, y, z, instanceId, stateCode)
-    instanceId = instanceId or 0
-    stateCode = stateCode or 55536
-    local payload = ""
-    payload = payload .. string.pack("<f", x)
-    payload = payload .. string.pack("<f", y)
-    payload = payload .. string.pack("<f", z)
-    payload = payload .. string.pack("<I4", instanceId)
-    payload = payload .. string.pack("<I4", stateCode)
-    payload = payload .. string.rep("\0", 10)
-
-    local base64Str = base64Encode(payload)
-    local jsonStr = string.format('{"m":null,"t":"buffer","base64":"%s"}', base64Str)
-    local bufferStr = "\nK\0\0\0" .. jsonStr
-
-    local buf = buffer.create(#bufferStr)
-    buffer.writestring(buf, 0, bufferStr)
-    return { 1, { buf } }
-end
-
-local function sendPositionPacket(x, y, z)
-    local args = buildPositionPacket(x, y, z)
-    UnreliableRemoteEvent:FireServer(unpack(args))
-end
--- ==================== 包系统结束 ====================
-
--- ==================== 全局配置（暴露给外部） ====================
-_G.BackstabPacket = _G.BackstabPacket or {}
-local cfgPacket = _G.BackstabPacket
-
-cfgPacket.enabled = false
-cfgPacket.currentMode = "Behind"
-cfgPacket.attackType = "Normal"
-cfgPacket.usePacketTeleport = false
-cfgPacket.matchFacing = false
-cfgPacket.detectRange = 15
-cfgPacket.tpDistance = 3
-cfgPacket.adhesionDuration = 0.6
-cfgPacket.burstCount = 8
-cfgPacket.triggerKey = Enum.KeyCode.Q
-
--- 内部状态
-local isAttackingPacket = false
-local cooldownPacket = false
-local lastTargetPacket = nil
-local isAlivePacket = true
-
-local killerNames_Packet = { "Jason", "c00lkidd", "JohnDoe", "1x1x1x1", "Noli", "Slasher", "Sixer" }
-
-local function getKillersFolder_Packet()
-    local playersFolder = workspace:FindFirstChild("Players")
-    return playersFolder and playersFolder:FindFirstChild("Killers") or nil
-end
-
--- 辅助函数（Counter动画检测）
-local counterAnimIDs_Packet = {
-    "126830014841198", "126355327951215", "121086746534252",
-    "18885909645", "98456918873918", "105458270463374",
-    "83829782357897", "125403313786645", "118298475669935",
-    "82113744478546", "70371667919898", "99135633258223",
-    "97167027849946", "109230267448394", "139835501033932",
-    "126896426760253", "109667959938617", "126681776859538",
-    "129976080405072", "121293883585738", "81639435858902",
-    "137314737492715", "92173139187970"
-}
-
-local function killerPlayingCounterAnim_Packet(killer)
-    local humanoid = killer:FindFirstChildOfClass("Humanoid")
-    if not humanoid or not humanoid:FindFirstChildOfClass("Animator") then return false end
-    for _, track in ipairs(humanoid.Animator:GetPlayingAnimationTracks()) do
-        if track.Animation and track.Animation.AnimationId then
-            local animIdNum = track.Animation.AnimationId:match("%d+")
-            for _, id in ipairs(counterAnimIDs_Packet) do
-                if tostring(animIdNum) == id then return true end
-            end
-        end
-    end
-    return false
-end
-
-local function isBehindTarget_Packet(hrp, targetHRP)
-    local distance = (hrp.Position - targetHRP.Position).Magnitude
-    if distance > cfgPacket.detectRange then return false end
-    if cfgPacket.currentMode == "Around" then return true
-    else
-        local direction = -targetHRP.CFrame.LookVector
-        local toPlayer = (hrp.Position - targetHRP.Position)
-        return toPlayer:Dot(direction) > 0.3
-    end
-end
-
--- 发包爆发（多包）
-local function sendPositionBurst(pos, count, interval)
-    count = count or cfgPacket.burstCount
-    interval = interval or 0.015
-
-    for i = 1, count do
-        local sendX, sendY, sendZ = pos.X, pos.Y, pos.Z
-        -- 抖动（保留原逻辑）
-        local jitter = 0.3
-        sendX = sendX + (math.random() - 0.5) * jitter * 2
-        sendY = sendY + (math.random() - 0.5) * jitter * 0.5
-        sendZ = sendZ + (math.random() - 0.5) * jitter * 2
-
-        sendPositionPacket(sendX, sendY, sendZ)
-        if i < count and interval > 0 then task.wait(interval) end
-    end
-end
-
--- ==================== 核心背刺执行（纯发包） ====================
-local function PerformBackstabPacket(targetKiller)
-    if isAttackingPacket then return end
-    isAttackingPacket = true
-
-    local char = lp2.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    if not hrp then 
-        isAttackingPacket = false
-        return
-    end
-
-    local anchorPos = hrp.Position
-
-    if daggerRemote_Packet then
-        pcall(function() daggerRemote_Packet:FireServer("UseActorAbility", {"Dagger"}) end)
-    end
-
-    local startTime = tick()
-
-    task.spawn(function()
-        -- 阶段1：预发包
-        if cfgPacket.usePacketTeleport then
-            for i = 1, 3 do
-                sendPositionPacket(anchorPos.X, anchorPos.Y, anchorPos.Z)
-                task.wait(0.01)
-            end
-        end
-
-        -- 阶段2：贴合期间持续发包
-        while tick() - startTime < cfgPacket.adhesionDuration do
-            if not isAlivePacket or not cfgPacket.enabled or not targetKiller or not targetKiller.Parent then
-                break
-            end
-
-            local ping = 50
-            pcall(function()
-                local pingStr = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
-                ping = tonumber(pingStr:match("%d+")) or 50
-            end)
-            local pingSeconds = ping / 1000
-            local targetVelocity = targetKiller.AssemblyLinearVelocity
-            local pingOffset = targetVelocity * pingSeconds
-            local predictedPos = targetKiller.Position + pingOffset
-
-            local targetPos
-            if cfgPacket.currentMode == "Behind" then
-                targetPos = predictedPos - (targetKiller.CFrame.LookVector * cfgPacket.tpDistance)
-            else
-                targetPos = predictedPos + (targetKiller.CFrame.RightVector * cfgPacket.tpDistance)
-            end
-
-            local backstabPos
-            if cfgPacket.matchFacing then
-                backstabPos = (CFrame.new(targetPos) * targetKiller.CFrame.Rotation).Position
-            else
-                backstabPos = CFrame.lookAt(targetPos, predictedPos).Position
-            end
-
-            if cfgPacket.usePacketTeleport then
-                sendPositionBurst(backstabPos, cfgPacket.burstCount, 0.015)
-            end
-
-            task.wait(0.05)
-        end
-
-        -- 阶段3：返回锚点
-        if cfgPacket.usePacketTeleport then
-            for i = 1, 5 do
-                sendPositionPacket(anchorPos.X, anchorPos.Y, anchorPos.Z)
-                task.wait(0.02)
-            end
-        end
-
-        isAttackingPacket = false
-    end)
-end
-
-local function ManualBackstabPacket()
-    if not cfgPacket.enabled or not isAlivePacket or isAttackingPacket then return end
-
-    local char = lp2.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    local targetKiller = nil
-    local minDist = cfgPacket.detectRange
-    local killersFolder = getKillersFolder_Packet()
-
-    if killersFolder then
-        for _, name in ipairs(killerNames_Packet) do
-            local killer = killersFolder:FindFirstChild(name)
-            if killer and killer:FindFirstChild("HumanoidRootPart") then
-                local kHRP = killer.HumanoidRootPart
-                local dist = (kHRP.Position - hrp.Position).Magnitude
-                if dist <= minDist then
-                    minDist = dist
-                    targetKiller = kHRP
-                end
-            end
-        end
-    end
-
-    if targetKiller then
-        PerformBackstabPacket(targetKiller)
-    end
-end
-
-UserInputService2.InputBegan:Connect(function(input, gp)
-    if gp or not isAlivePacket then return end
-    if input.KeyCode == cfgPacket.triggerKey then
-        ManualBackstabPacket()
-    end
-end)
-
-RunService2.RenderStepped:Connect(function()
-    if not cfgPacket.enabled or not isAlivePacket or cooldownPacket or cfgPacket.attackType == "Normal" or isAttackingPacket then return end 
-
-    local char = lp2.Character
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")
-    if not hrp then return end
-
-    local killersFolder = getKillersFolder_Packet()
-    if not killersFolder then return end
-
-    for _, name in ipairs(killerNames_Packet) do
-        local killer = killersFolder:FindFirstChild(name)
-        if killer and killer:FindFirstChild("HumanoidRootPart") then
-            local kHRP = killer.HumanoidRootPart
-
-            if cfgPacket.attackType == "Legit" then
-                local dist = (kHRP.Position - hrp.Position).Magnitude
-                if dist <= cfgPacket.detectRange then
-                    if cfgPacket.currentMode == "Behind" then
-                        local directionToTarget = (kHRP.Position - hrp.Position).Unit
-                        local dot = hrp.CFrame.LookVector:Dot(directionToTarget)
-                        if dot > 0.6 then return end
-                    end
-                    PerformBackstabPacket(kHRP)
-                end
-                return 
-            end
-
-            if cfgPacket.attackType == "Counter" and not killerPlayingCounterAnim_Packet(killer) then
-                continue
-            end
-
-            if isBehindTarget_Packet(hrp, kHRP) and killer ~= lastTargetPacket then
-                cooldownPacket = true
-                lastTargetPacket = killer
-                PerformBackstabPacket(kHRP)
-                task.delay(2, function()
-                    lastTargetPacket = nil
-                    cooldownPacket = false
-                end)
-                break
-            end
-        end
-    end
-end)
-
--- 对外接口
-_G.BackstabPacket.ManualTrigger = ManualBackstabPacket
-_G.BackstabPacket.SetEnabled = function(s) cfgPacket.enabled = s end
-_G.BackstabPacket.SetMode = function(m) cfgPacket.currentMode = m end
-_G.BackstabPacket.SetAttackType = function(t) cfgPacket.attackType = t end
-_G.BackstabPacket.SetPacketTeleport = function(s) cfgPacket.usePacketTeleport = s end
-_G.BackstabPacket.SetMatchFacing = function(s) cfgPacket.matchFacing = s end
-_G.BackstabPacket.SetDetectRange = function(v) cfgPacket.detectRange = v end
-_G.BackstabPacket.SetTpDistance = function(v) cfgPacket.tpDistance = v end
-_G.BackstabPacket.SetAdhesionDuration = function(v) cfgPacket.adhesionDuration = v end
-_G.BackstabPacket.SetBurstCount = function(v) cfgPacket.burstCount = math.floor(v) end
-_G.BackstabPacket.SetTriggerKey = function(k) cfgPacket.triggerKey = k end
-
-print("Packet Backstab loaded.")
-
--- ===== 左侧：Hook传送背刺 =====
 local leftGroup = Tabs.Backstab:AddLeftGroupbox("传送背刺")
-
 leftGroup:AddToggle("HookEnable", {
     Text = "启用背刺",
     Default = false,
     Callback = function(s) _G.Backstab.SetEnabled(s) end
 })
-
 leftGroup:AddDropdown("HookMode", {
     Text = "攻击模式",
     Values = { "Behind", "Around" },
     Default = "Behind",
     Callback = function(v) _G.Backstab.SetMode(v) end
 })
-
 leftGroup:AddDropdown("HookAttackType", {
     Text = "攻击类型",
     Values = { "Normal", "Counter", "Legit" },
     Default = "Normal",
     Callback = function(v) _G.Backstab.SetAttackType(v) end
 })
-
 leftGroup:AddToggle("HookTeleport", {
     Text = "Hook传送 (位置欺骗)",
     Default = false,
     Callback = function(s) _G.Backstab.SetHookTeleport(s) end
 })
-
 leftGroup:AddToggle("HookMatchFacing", {
     Text = "同步杀手朝向",
     Default = false,
     Callback = function(s) _G.Backstab.SetMatchFacing(s) end
 })
-
 leftGroup:AddSlider("HookDetectRange", {
     Text = "检测范围",
     Min = 5, Max = 50, Default = 15, Rounding = 1,
     Callback = function(v) _G.Backstab.SetDetectRange(v) end
 })
-
 leftGroup:AddSlider("HookTpDistance", {
     Text = "背刺偏移距离",
     Min = 1, Max = 10, Default = 3, Rounding = 1,
     Callback = function(v) _G.Backstab.SetTpDistance(v) end
 })
-
 leftGroup:AddSlider("HookAdhesion", {
     Text = "贴合持续时间 (秒)",
     Min = 0.1, Max = 2.0, Default = 0.6, Rounding = 2,
     Callback = function(v) _G.Backstab.SetAdhesionDuration(v) end
 })
-
 local hookLabel = leftGroup:AddLabel("自定义触发键: ")
 hookLabel:AddKeyPicker("HookTriggerKey", {
     Default = "Q",
@@ -4544,85 +4191,9 @@ hookLabel:AddKeyPicker("HookTriggerKey", {
         _G.Backstab.SetTriggerKey(enumKey or Enum.KeyCode.Q)
     end
 })
-
 leftGroup:AddButton("HookManual", {
     Text = "手动触发一次背刺",
     Callback = function() _G.Backstab.ManualTrigger() end
-})
-
--- ===== 右侧：发包背刺 =====
-local rightGroup = Tabs.Backstab:AddRightGroupbox("追踪背刺")
-
-rightGroup:AddToggle("PacketEnable", {
-    Text = "启用背刺",
-    Default = false,
-    Callback = function(s) _G.BackstabPacket.SetEnabled(s) end
-})
-
-rightGroup:AddDropdown("PacketMode", {
-    Text = "攻击模式",
-    Values = { "Behind", "Around" },
-    Default = "Behind",
-    Callback = function(v) _G.BackstabPacket.SetMode(v) end
-})
-
-rightGroup:AddDropdown("PacketAttackType", {
-    Text = "攻击类型",
-    Values = { "Normal", "Counter", "Legit" },
-    Default = "Normal",
-    Callback = function(v) _G.BackstabPacket.SetAttackType(v) end
-})
-
-rightGroup:AddToggle("PacketTeleport", {
-    Text = "发包背刺 (服务器位置欺骗)",
-    Default = false,
-    Callback = function(s) _G.BackstabPacket.SetPacketTeleport(s) end
-})
-
-rightGroup:AddToggle("PacketMatchFacing", {
-    Text = "同步杀手朝向",
-    Default = false,
-    Callback = function(s) _G.BackstabPacket.SetMatchFacing(s) end
-})
-
-rightGroup:AddSlider("PacketDetectRange", {
-    Text = "检测范围",
-    Min = 5, Max = 50, Default = 15, Rounding = 1,
-    Callback = function(v) _G.BackstabPacket.SetDetectRange(v) end
-})
-
-rightGroup:AddSlider("PacketTpDistance", {
-    Text = "背刺偏移距离",
-    Min = 1, Max = 10, Default = 3, Rounding = 1,
-    Callback = function(v) _G.BackstabPacket.SetTpDistance(v) end
-})
-
-rightGroup:AddSlider("PacketAdhesion", {
-    Text = "贴合持续时间 (秒)",
-    Min = 0.1, Max = 2.0, Default = 0.6, Rounding = 2,
-    Callback = function(v) _G.BackstabPacket.SetAdhesionDuration(v) end
-})
-
-rightGroup:AddSlider("PacketBurstCount", {
-    Text = "单次发包数量",
-    Min = 1, Max = 20, Default = 8, Rounding = 1,
-    Callback = function(v) _G.BackstabPacket.SetBurstCount(v) end
-})
-
-local packetLabel = rightGroup:AddLabel("自定义触发键: ")
-packetLabel:AddKeyPicker("PacketTriggerKey", {
-    Default = "Q",
-    NoUI = false,
-    Text = "自定义触发键",
-    Callback = function(key)
-        local enumKey = Enum.KeyCode[key]
-        _G.BackstabPacket.SetTriggerKey(enumKey or Enum.KeyCode.Q)
-    end
-})
-
-rightGroup:AddButton("PacketManual", {
-    Text = "手动触发一次背刺",
-    Callback = function() _G.BackstabPacket.ManualTrigger() end
 })
 
 local RunService = game:GetService("RunService")
@@ -6363,7 +5934,7 @@ local WALL_CONFIG = {
     minClearance = 1.2,        -- 最小 clearance 距离
 }
 
-function getRaycastIgnoreList()
+local function getRaycastIgnoreList()
     local ignoreList = {}
     if REAL_CHARACTER then
         for _, part in ipairs(REAL_CHARACTER:GetDescendants()) do
@@ -6382,13 +5953,13 @@ function getRaycastIgnoreList()
     return ignoreList
 end
 
-function isWallBlocking(startPos, endPos, targetCharacter)
-    direction = (endPos - startPos)
-    distance = direction.Magnitude
+local function isWallBlocking(startPos, endPos, targetCharacter)
+    local direction = (endPos - startPos)
+    local distance = direction.Magnitude
     if distance < 0.001 then return false end
     direction = direction.Unit
 
-    ignoreList = getRaycastIgnoreList()
+    local ignoreList = getRaycastIgnoreList()
     -- 将目标角色加入忽略列表
     if targetCharacter then
         for _, part in ipairs(targetCharacter:GetDescendants()) do
@@ -6413,7 +5984,7 @@ function isWallBlocking(startPos, endPos, targetCharacter)
     return false, nil, nil, nil
 end
 
-function findValidAttackPosition(targetRoot, preferredPos, targetCharacter)
+local function findValidAttackPosition(targetRoot, preferredPos, targetCharacter)
     if not WALL_CONFIG.enabled then return preferredPos end
     if not targetRoot then return preferredPos end
 
@@ -6525,7 +6096,7 @@ function findValidAttackPosition(targetRoot, preferredPos, targetCharacter)
 end
 
 -- 动态获取基准位置（隐身时以幽灵为基准）
-function getMyPosition()
+local function getMyPosition()
     if IS_INVISIBLE and GHOST_HRP then
         return GHOST_HRP.Position
     elseif REAL_HRP then
@@ -6534,26 +6105,26 @@ function getMyPosition()
     return Vector3.new(0, 0, 0)
 end
 
-function getDynamicPosition(targetRoot, dragRatio, targetCharacter)
+local function getDynamicPosition(targetRoot, dragRatio, targetCharacter)
     if not targetRoot or not targetRoot.Parent then return nil end
-    targetPos = targetRoot.Position
+    local targetPos = targetRoot.Position
     dragRatio = dragRatio or 0
 
     if PREDICT_CONFIG.enabled and dragRatio > 0 then
-        predictVec = targetRoot.CFrame.LookVector
+        local predictVec = targetRoot.CFrame.LookVector
         if targetRoot.AssemblyLinearVelocity.Magnitude > 1 then
             predictVec = targetRoot.AssemblyLinearVelocity.Unit
         end
-        offset = predictVec * (PREDICT_CONFIG.distance * dragRatio)
+        local offset = predictVec * (PREDICT_CONFIG.distance * dragRatio)
         targetPos = targetPos + offset
     end
 
-    finalPos = targetPos
+    local finalPos = targetPos
 
     if RANGE_CONFIG.enabled then
-        myPos = getMyPosition()
-        toTarget = targetPos - myPos
-        distance = toTarget.Magnitude
+        local myPos = getMyPosition()
+        local toTarget = targetPos - myPos
+        local distance = toTarget.Magnitude
         if distance >= 0.001 and RANGE_CONFIG.extendDistance < distance then
             finalPos = myPos + toTarget.Unit * RANGE_CONFIG.extendDistance
         end
@@ -6565,7 +6136,7 @@ function getDynamicPosition(targetRoot, dragRatio, targetCharacter)
     return finalPos
 end
 
-function sendPositionBurst(targetRoot, count, interval, targetCharacter)
+local function sendPositionBurst(targetRoot, count, interval, targetCharacter)
     count = count or PACKET_CONFIG.burstCount
     interval = interval or PACKET_CONFIG.burstInterval
 
@@ -6587,29 +6158,29 @@ function sendPositionBurst(targetRoot, count, interval, targetCharacter)
     end
 end
 
-function getSendDuration()
+local function getSendDuration()
     return PACKET_CONFIG.useCustomDuration and PACKET_CONFIG.customDuration or PACKET_CONFIG.defaultDuration
 end
 
-function sendPositionSustained(targetRoot, duration, targetCharacter)
+local function sendPositionSustained(targetRoot, duration, targetCharacter)
     duration = duration or getSendDuration()
-    startTime = tick()
-    dragCycle = 0.2 
+    local startTime = tick()
+    local dragCycle = 0.2 
 
     while tick() - startTime < duration do
-        elapsed = tick() - startTime
-        cycleProgress = (elapsed % dragCycle) / dragCycle
-        pos = getDynamicPosition(targetRoot, 1 - cycleProgress, targetCharacter)
+        local elapsed = tick() - startTime
+        local cycleProgress = (elapsed % dragCycle) / dragCycle
+        local pos = getDynamicPosition(targetRoot, 1 - cycleProgress, targetCharacter)
         if pos then sendSinglePacket(pos.X, pos.Y, pos.Z) end
         task.wait(0.03)
     end
 end
 
-function sendAttackSequence(targetRoot, targetCharacter)
+local function sendAttackSequence(targetRoot, targetCharacter)
     if not targetRoot then return end
     if PACKET_CONFIG.usePreBurst then sendPositionBurst(targetRoot, PACKET_CONFIG.preBurstCount, 0.01, targetCharacter) end
     sendPositionBurst(targetRoot, PACKET_CONFIG.burstCount, PACKET_CONFIG.burstInterval, targetCharacter)
-    duration = getSendDuration()
+    local duration = getSendDuration()
     if duration > 0 then sendPositionSustained(targetRoot, duration, targetCharacter) end
     if PACKET_CONFIG.usePostBurst then
         task.wait(PACKET_CONFIG.postDelay)
@@ -6617,18 +6188,18 @@ function sendAttackSequence(targetRoot, targetCharacter)
     end
 end
 
-LOCKED_SURVIVOR = nil
-ALL_SURVIVORS = {}
+local LOCKED_SURVIVOR = nil
+local ALL_SURVIVORS = {}
 
-function getSurvivors()
-    survivorsList = {}
-    myPos = getMyPosition()
+local function getSurvivors()
+    local survivorsList = {}
+    local myPos = getMyPosition()
 
-    function addSurvivor(survivor)
+    local function addSurvivor(survivor)
         if survivor ~= REAL_CHARACTER and survivor ~= GHOST_CHARACTER then
-            root = survivor:FindFirstChild("HumanoidRootPart") or survivor:FindFirstChild("PrimaryPart")
+            local root = survivor:FindFirstChild("HumanoidRootPart") or survivor:FindFirstChild("PrimaryPart")
             if root then
-                exists = false
+                local exists = false
                 for _, existing in ipairs(survivorsList) do
                     if existing.character == survivor then exists = true break end
                 end
@@ -6642,34 +6213,34 @@ function getSurvivors()
         end
     end
 
-    survivorsFolder = Workspace:FindFirstChild("Players") and Workspace.Players:FindFirstChild("Survivors")
+    local survivorsFolder = Workspace:FindFirstChild("Players") and Workspace.Players:FindFirstChild("Survivors")
     if survivorsFolder then for _, s in ipairs(survivorsFolder:GetChildren()) do addSurvivor(s) end end
-    altFolder = Workspace:FindFirstChild("Survivors")
+    local altFolder = Workspace:FindFirstChild("Survivors")
     if altFolder then for _, s in ipairs(altFolder:GetChildren()) do addSurvivor(s) end end
 
     table.sort(survivorsList, function(a, b) return a.distance < b.distance end)
     return survivorsList
 end
 
-function getAttackTarget()
+local function getAttackTarget()
     if LOCKED_SURVIVOR then
-        root = LOCKED_SURVIVOR:FindFirstChild("HumanoidRootPart") or LOCKED_SURVIVOR:FindFirstChild("PrimaryPart")
+        local root = LOCKED_SURVIVOR:FindFirstChild("HumanoidRootPart") or LOCKED_SURVIVOR:FindFirstChild("PrimaryPart")
         if root then
             return { character = LOCKED_SURVIVOR, root = root, name = LOCKED_SURVIVOR.Name, isLocked = true }
         else LOCKED_SURVIVOR = nil end
     end
-    survivors = getSurvivors()
+    local survivors = getSurvivors()
     if #survivors > 0 then survivors[1].isLocked = false return survivors[1] end
     return nil
 end
 
-ATTACK_MODE = { single = true, aoe = false }
+local ATTACK_MODE = { single = true, aoe = false }
 
-function attackTarget()
+local function attackTarget()
     if ATTACK_MODE.aoe then
-        survivors = getSurvivors()
+        local survivors = getSurvivors()
         if #survivors == 0 then return false end
-        count = math.min(#survivors, 8)
+        local count = math.min(#survivors, 8)
         task.spawn(function()
             for i = 1, count do
                 if survivors[i].root then sendAttackSequence(survivors[i].root, survivors[i].character) end
@@ -6678,13 +6249,15 @@ function attackTarget()
         end)
         return true
     else
-        target = getAttackTarget()
+        local target = getAttackTarget()
         if target and target.root then sendAttackSequence(target.root, target.character) return true end
         return false
     end
 end
 
-function voidAnchor(character)
+local enableInvisibility, disableInvisibility, quickRestart
+
+local function voidAnchor(character)
     for _, part in ipairs(character:GetDescendants()) do
         if part:IsA("BasePart") then
             part.Anchored = true; part.CanCollide = false; part.Transparency = 1
@@ -6692,16 +6265,16 @@ function voidAnchor(character)
         elseif part:IsA("BillboardGui") or part:IsA("SurfaceGui") then part.Enabled = false
         end
     end
-    humanoid = character:FindFirstChildOfClass("Humanoid")
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
     if humanoid then humanoid.PlatformStand = true; humanoid.AutoRotate = false; humanoid.WalkSpeed = 0; humanoid.JumpPower = 0 end
-    hrp = character:FindFirstChild("HumanoidRootPart")
+    local hrp = character:FindFirstChild("HumanoidRootPart")
     if hrp then hrp.CFrame = CFrame.new(hrp.Position.X, VOID_DEPTH, hrp.Position.Z) end
 end
 
-function createGhostCharacter(realChar)
-    oldArchivable = realChar.Archivable
+local function createGhostCharacter(realChar)
+    local oldArchivable = realChar.Archivable
     realChar.Archivable = true
-    ghost = realChar:Clone()
+    local ghost = realChar:Clone()
     realChar.Archivable = oldArchivable
     ghost.Name = player.Name .. "_Ghost"
 
@@ -6709,8 +6282,8 @@ function createGhostCharacter(realChar)
         if desc:IsA("Script") or desc:IsA("LocalScript") then desc:Destroy() end
     end
 
-    ghostHRP = ghost:WaitForChild("HumanoidRootPart")
-    ghostHum = ghost:WaitForChild("Humanoid")
+    local ghostHRP = ghost:WaitForChild("HumanoidRootPart")
+    local ghostHum = ghost:WaitForChild("Humanoid")
     ghostHum.PlatformStand = false; ghostHum.WalkSpeed = ORBIT_STATE.ghostSpeed; ghostHum.JumpPower = 50
 
     for _, part in ipairs(ghost:GetDescendants()) do
@@ -6720,7 +6293,7 @@ function createGhostCharacter(realChar)
     return ghost, ghostHRP
 end
 
-function startOrbitControl()
+local function startOrbitControl()
     for _, conn in ipairs(GHOST_CONNECTIONS) do pcall(function() conn:Disconnect() end) end
     GHOST_CONNECTIONS = {}
 
@@ -6756,15 +6329,15 @@ function startOrbitControl()
 
     table.insert(GHOST_CONNECTIONS, RunService.RenderStepped:Connect(function()
         if not IS_INVISIBLE or not GHOST_HRP then return end
-        moveX, moveZ = 0, 0
+        local moveX, moveZ = 0, 0
         if ORBIT_STATE.keysDown[Enum.KeyCode.W] then moveZ = -1 end
         if ORBIT_STATE.keysDown[Enum.KeyCode.S] then moveZ = 1 end
         if ORBIT_STATE.keysDown[Enum.KeyCode.A] then moveX = -1 end
         if ORBIT_STATE.keysDown[Enum.KeyCode.D] then moveX = 1 end
 
-        rawMoveVec = Vector3.new(moveX, 0, moveZ)
+        local rawMoveVec = Vector3.new(moveX, 0, moveZ)
         if rawMoveVec.Magnitude > 0 then rawMoveVec = rawMoveVec.Unit end
-        worldMoveVec = CFrame.Angles(0, ORBIT_STATE.yaw, 0) * rawMoveVec
+        local worldMoveVec = CFrame.Angles(0, ORBIT_STATE.yaw, 0) * rawMoveVec
 
         if GHOST_HUMANOID then
             GHOST_HUMANOID.WalkSpeed = ORBIT_STATE.ghostSpeed
@@ -6772,12 +6345,12 @@ function startOrbitControl()
             if ORBIT_STATE.keysDown[Enum.KeyCode.Space] then GHOST_HUMANOID.Jump = true end
         end
 
-        targetPos = GHOST_HRP.Position + Vector3.new(0, 1.5, 0)
-        camRotation = CFrame.Angles(0, ORBIT_STATE.yaw, 0) * CFrame.Angles(ORBIT_STATE.pitch, 0, 0)
+        local targetPos = GHOST_HRP.Position + Vector3.new(0, 1.5, 0)
+        local camRotation = CFrame.Angles(0, ORBIT_STATE.yaw, 0) * CFrame.Angles(ORBIT_STATE.pitch, 0, 0)
         camera.CFrame = CFrame.new(targetPos + camRotation * Vector3.new(0, 0, ORBIT_STATE.distance), targetPos)
 
         if REAL_HRP then
-            ghostLook = GHOST_HRP.CFrame.LookVector
+            local ghostLook = GHOST_HRP.CFrame.LookVector
             REAL_HRP.CFrame = CFrame.new(GHOST_HRP.Position.X, VOID_DEPTH, GHOST_HRP.Position.Z) * CFrame.Angles(0, math.atan2(ghostLook.X, ghostLook.Z), 0)
         end
     end))
@@ -6811,7 +6384,7 @@ disableInvisibility = function()
             elseif part:IsA("Decal") or part:IsA("Texture") then part.Transparency = 0
             elseif part:IsA("BillboardGui") or part:IsA("SurfaceGui") then part.Enabled = true end
         end
-        hum = REAL_CHARACTER:FindFirstChildOfClass("Humanoid")
+        local hum = REAL_CHARACTER:FindFirstChildOfClass("Humanoid")
         if hum then hum.PlatformStand = false; hum.AutoRotate = true; hum.WalkSpeed = 16; hum.JumpPower = 50 end
         if REAL_HRP and ORIGINAL_POS then REAL_HRP.CFrame = ORIGINAL_POS + Vector3.new(0, 5, 0) end
         camera.CameraSubject = hum
@@ -6820,8 +6393,8 @@ end
 
 quickRestart = function()
     if not IS_INVISIBLE then return end
-    savedPos = GHOST_HRP and GHOST_HRP.CFrame or ORIGINAL_POS
-    savedYaw, savedPitch, savedDist = ORBIT_STATE.yaw, ORBIT_STATE.pitch, ORBIT_STATE.distance
+    local savedPos = GHOST_HRP and GHOST_HRP.CFrame or ORIGINAL_POS
+    local savedYaw, savedPitch, savedDist = ORBIT_STATE.yaw, ORBIT_STATE.pitch, ORBIT_STATE.distance
     disableInvisibility()
     task.wait(0.1)
 
@@ -6840,200 +6413,246 @@ quickRestart = function()
     ORBIT_STATE.yaw, ORBIT_STATE.pitch, ORBIT_STATE.distance = savedYaw, savedPitch, savedDist
 end
 
-leftGroup = Tabs.tfz:AddLeftGroupbox("碰撞箱Pro")
-rightGroup = Tabs.tfz:AddRightGroupbox("参数调节")
 
--- ---------- 左侧：功能按钮与主开关 ----------statusLabel = leftGroup:AddLabel("状态: 正常模式 | 狂暴模式")
-
-leftGroup:AddButton("EnableInvis", {
-    Text = "启用隐身",
-    Callback = function()
-        if not IS_INVISIBLE then
-            ORIGINAL_POS = nil
-            enableInvisibility()
-            statusLabel.Text = "状态: 隐身开启 | WASD强制移动"
-        end
+local function CreateCoreFeatures()
+    -- 自动适配标签页（如果 Tabs.tfz 不存在，尝试创建或使用其他标签页）
+    local targetTab = Tabs.tfz or Tabs.Main or Tabs.Backstab or Tabs.Bro or Tabs.Block
+    
+    if not targetTab then
+        -- 如果没有任何标签页，创建一个新的
+        targetTab = Window:AddTab('杀戮', 'skull')
+        Tabs.tfz = targetTab
     end
-})
+    
+    local leftGroup = targetTab:AddLeftGroupbox("碰撞箱Pro")
+    local rightGroup = targetTab:AddRightGroupbox("参数调节")
 
-leftGroup:AddButton("DisableInvis", {
-    Text = "关闭隐身",
-    Callback = function()
+    -- ---------- 左侧：功能按钮与主开关 ----------
+    local statusLabel = leftGroup:AddLabel("状态: 正常模式 | 狂暴模式")
+
+    leftGroup:AddToggle("LeftClickTrigger", {
+        Text = "左键触发追踪网",
+        Default = true,
+        Callback = function(state)
+            leftClickTrigger = state
+        end
+    })
+
+    leftGroup:AddToggle("AutoAttackLoop", {
+        Text = "强制循环追踪",
+        Default = false,
+        Callback = function(state)
+            autoAttackLoop = state
+            if state then
+                task.spawn(function()
+                    while autoAttackLoop do
+                        attackTarget()
+                        task.wait(0.1)
+                    end
+                end)
+            end
+        end
+    })
+
+    leftGroup:AddToggle("AOEMode", {
+        Text = "全图追踪",
+        Default = false,
+        Callback = function(state)
+            ATTACK_MODE.aoe = state
+            ATTACK_MODE.single = not state
+        end
+    })
+
+    -- ---------- 右侧：全部参数调节 ----------
+    rightGroup:AddLabel("轨道摄像机与幽灵")
+
+    rightGroup:AddSlider("GhostSpeed", {
+        Text = "幽灵移动速度",
+        Min = 16,
+        Max = 100,
+        Default = 24,
+        Callback = function(val)
+            ORBIT_STATE.ghostSpeed = val
+        end
+    })
+
+    rightGroup:AddSlider("Sensitivity", {
+        Text = "鼠标视角灵敏度",
+        Min = 0.05,
+        Max = 1.0,
+        Default = 0.25,
+        Callback = function(val)
+            ORBIT_STATE.sensitivity = val
+        end
+    })
+
+    rightGroup:AddLabel("预判拖拽网设置")
+
+    rightGroup:AddToggle("PredictEnabled", {
+        Text = "启用前方拖拽至基准点",
+        Default = true,
+        Callback = function(state)
+            PREDICT_CONFIG.enabled = state
+        end
+    })
+
+    rightGroup:AddSlider("PredictDistance", {
+        Text = "网端预判距离 (studs)",
+        Min = 1,
+        Max = 20,
+        Default = 5,
+        Callback = function(val)
+            PREDICT_CONFIG.distance = val
+        end
+    })
+
+    rightGroup:AddToggle("RangeEnabled", {
+        Text = "启用伪长臂延展",
+        Default = false,
+        Callback = function(state)
+            RANGE_CONFIG.enabled = state
+        end
+    })
+
+    rightGroup:AddSlider("RangeDistance", {
+        Text = "延展距离 (studs)",
+        Min = 0,
+        Max = 100,
+        Default = 10,
+        Callback = function(val)
+            RANGE_CONFIG.extendDistance = val
+        end
+    })
+
+    rightGroup:AddLabel("爆发与持续发包")
+
+    rightGroup:AddSlider("BurstCount", {
+        Text = "主连发包数量",
+        Min = 1,
+        Max = 20,
+        Default = 8,
+        Rounding = 1,
+        Callback = function(val)
+            PACKET_CONFIG.burstCount = math.floor(val)
+        end
+    })
+
+    rightGroup:AddSlider("BurstInterval", {
+        Text = "连发包间隔(秒)",
+        Min = 0.001,
+        Max = 0.1,
+        Default = 0.015,
+        Callback = function(val)
+            PACKET_CONFIG.burstInterval = val
+        end
+    })
+
+    rightGroup:AddToggle("CustomDuration", {
+        Text = "使用自定义持续追踪时间",
+        Default = false,
+        Callback = function(state)
+            PACKET_CONFIG.useCustomDuration = state
+        end
+    })
+
+    rightGroup:AddSlider("CustomDurationVal", {
+        Text = "自定义追踪时间(秒)",
+        Min = 0.1,
+        Max = 2.0,
+        Default = 0.6,
+        Callback = function(val)
+            PACKET_CONFIG.customDuration = val
+        end
+    })
+
+    rightGroup:AddSlider("JitterAmount", {
+        Text = "位置随机抖动 (Jitter)",
+        Min = 0,
+        Max = 2,
+        Default = 0.3,
+        Callback = function(val)
+            PACKET_CONFIG.jitterAmount = val
+        end
+    })
+
+    rightGroup:AddLabel("墙体穿透修正系统")
+
+    rightGroup:AddToggle("WallEnabled", {
+        Text = "启用墙体检测修正",
+        Default = true,
+        Callback = function(state)
+            WALL_CONFIG.enabled = state
+        end
+    })
+
+    rightGroup:AddSlider("WallOffset", {
+        Text = "贴墙偏移距离",
+        Min = 0.5,
+        Max = 5,
+        Default = 1.5,
+        Callback = function(val)
+            WALL_CONFIG.wallOffset = val
+        end
+    })
+
+    rightGroup:AddSlider("RayDirections", {
+        Text = "环绕检测射线数",
+        Min = 4,
+        Max = 16,
+        Default = 8,
+        Rounding = 1,
+        Callback = function(val)
+            WALL_CONFIG.rayDirections = math.floor(val)
+        end
+    })
+
+    rightGroup:AddSlider("RaycastDistance", {
+        Text = "射线检测距离",
+        Min = 10,
+        Max = 100,
+        Default = 50,
+        Callback = function(val)
+            WALL_CONFIG.raycastDistance = val
+        end
+    })
+
+    rightGroup:AddSlider("CheckHeight", {
+        Text = "检测高度偏移",
+        Min = 0,
+        Max = 5,
+        Default = 2,
+        Callback = function(val)
+            WALL_CONFIG.checkHeightOffset = val
+        end
+    })
+
+    -- ---------- 事件绑定（保持不变） ----------
+    table.insert(uiConnections, UserInputService.InputBegan:Connect(function(input, gp)
+        if gp then return end
+        if leftClickTrigger and input.UserInputType == Enum.UserInputType.MouseButton1 then
+            if not attackCooldown then
+                attackCooldown = true
+                attackTarget()
+                task.delay(0.3, function()
+                    attackCooldown = false
+                end)
+            end
+        end
+    end))
+
+    table.insert(uiConnections, player.CharacterAdded:Connect(function(newChar)
         if IS_INVISIBLE then
             disableInvisibility()
-            statusLabel.Text = "状态: 正常模式 | 监听左键"
         end
-    end
-})
+        REAL_CHARACTER = newChar
+        REAL_HRP = newChar:WaitForChild("HumanoidRootPart")
+    end))
+end
 
-leftGroup:AddButton("QuickRestart", {
-    Text = "手动解除卡死 (快速重置)",
-    Callback = function()
-        quickRestart()
-    end
-})
+-- 调用函数创建UI
+CreateCoreFeatures()
 
-leftGroup:AddToggle("LeftClickTrigger", {
-    Text = "左键触发追踪网",
-    Default = true,
-    Callback = function(state)
-        leftClickTrigger = state
-    end
-})
-
-leftGroup:AddToggle("AutoAttackLoop", {
-    Text = "强制循环追踪",
-    Default = false,
-    Callback = function(state)
-        autoAttackLoop = state
-        if state then
-            task.spawn(function()
-                while autoAttackLoop do
-                    attackTarget()
-                    task.wait(0.1)
-                end
-            end)
-        end
-    end
-})
-
-leftGroup:AddToggle("AOEMode", {
-    Text = "全图追踪",
-    Default = false,
-    Callback = function(state)
-        ATTACK_MODE.aoe = state
-        ATTACK_MODE.single = not state
-    end
-})
-
--- ---------- 右侧：全部参数调节 ----------
-rightGroup:AddLabel("轨道摄像机与幽灵")
-
-rightGroup:AddSlider("GhostSpeed", {
-    Text = "幽灵移动速度",
-    Min = 16, Max = 100, Default = 24,
-    Callback = function(val) ORBIT_STATE.ghostSpeed = val end
-})
-
-rightGroup:AddSlider("Sensitivity", {
-    Text = "鼠标视角灵敏度",
-    Min = 0.05, Max = 1.0, Default = 0.25,
-    Callback = function(val) ORBIT_STATE.sensitivity = val end
-})
-
-rightGroup:AddLabel("预判拖拽网设置")
-
-rightGroup:AddToggle("PredictEnabled", {
-    Text = "启用前方拖拽至基准点",
-    Default = true,
-    Callback = function(state) PREDICT_CONFIG.enabled = state end
-})
-
-rightGroup:AddSlider("PredictDistance", {
-    Text = "网端预判距离 (studs)",
-    Min = 1, Max = 20, Default = 5,
-    Callback = function(val) PREDICT_CONFIG.distance = val end
-})
-
-rightGroup:AddToggle("RangeEnabled", {
-    Text = "启用伪长臂延展",
-    Default = false,
-    Callback = function(state) RANGE_CONFIG.enabled = state end
-})
-
-rightGroup:AddSlider("RangeDistance", {
-    Text = "延展距离 (studs)",
-    Min = 0, Max = 100, Default = 10,
-    Callback = function(val) RANGE_CONFIG.extendDistance = val end
-})
-
-rightGroup:AddLabel("爆发与持续发包")
-
-rightGroup:AddSlider("BurstCount", {
-    Text = "主连发包数量",
-    Min = 1, Max = 20, Default = 8, Rounding = 1,
-    Callback = function(val) PACKET_CONFIG.burstCount = math.floor(val) end
-})
-
-rightGroup:AddSlider("BurstInterval", {
-    Text = "连发包间隔(秒)",
-    Min = 0.001, Max = 0.1, Default = 0.015,
-    Callback = function(val) PACKET_CONFIG.burstInterval = val end
-})
-
-rightGroup:AddToggle("CustomDuration", {
-    Text = "使用自定义持续追踪时间",
-    Default = false,
-    Callback = function(state) PACKET_CONFIG.useCustomDuration = state end
-})
-
-rightGroup:AddSlider("CustomDurationVal", {
-    Text = "自定义追踪时间(秒)",
-    Min = 0.1, Max = 2.0, Default = 0.6,
-    Callback = function(val) PACKET_CONFIG.customDuration = val end
-})
-
-rightGroup:AddSlider("JitterAmount", {
-    Text = "位置随机抖动 (Jitter)",
-    Min = 0, Max = 2, Default = 0.3,
-    Callback = function(val) PACKET_CONFIG.jitterAmount = val end
-})
-
-rightGroup:AddLabel("墙体穿透修正系统")
-
-rightGroup:AddToggle("WallEnabled", {
-    Text = "启用墙体检测修正",
-    Default = true,
-    Callback = function(state) WALL_CONFIG.enabled = state end
-})
-
-rightGroup:AddSlider("WallOffset", {
-    Text = "贴墙偏移距离",
-    Min = 0.5, Max = 5, Default = 1.5,
-    Callback = function(val) WALL_CONFIG.wallOffset = val end
-})
-
-rightGroup:AddSlider("RayDirections", {
-    Text = "环绕检测射线数",
-    Min = 4, Max = 16, Default = 8, Rounding = 1,
-    Callback = function(val) WALL_CONFIG.rayDirections = math.floor(val) end
-})
-
-rightGroup:AddSlider("RaycastDistance", {
-    Text = "射线检测距离",
-    Min = 10, Max = 100, Default = 50,
-    Callback = function(val) WALL_CONFIG.raycastDistance = val end
-})
-
-rightGroup:AddSlider("CheckHeight", {
-    Text = "检测高度偏移",
-    Min = 0, Max = 5, Default = 2,
-    Callback = function(val) WALL_CONFIG.checkHeightOffset = val end
-})
-
--- ---------- 事件绑定（保持不变） ----------
-table.insert(uiConnections, UserInputService.InputBegan:Connect(function(input, gp)
-    if gp then return end
-    if leftClickTrigger and input.UserInputType == Enum.UserInputType.MouseButton1 then
-        if not attackCooldown then
-            attackCooldown = true
-            attackTarget()
-            task.delay(0.3, function()
-                attackCooldown = false
-            end)
-        end
-    end
-end))
-
-table.insert(uiConnections, player.CharacterAdded:Connect(function(newChar)
-    if IS_INVISIBLE then
-        disableInvisibility()
-    end
-    REAL_CHARACTER = newChar
-    REAL_HRP = newChar:WaitForChild("HumanoidRootPart")
-end))
-
-ZZ = Tabs.ani:AddLeftGroupbox('Noli反效果')
+local ZZ = Tabs.ani:AddLeftGroupbox('Noli反效果')
 do
 noliDeleterActive = false
 deletionConnection = nil
